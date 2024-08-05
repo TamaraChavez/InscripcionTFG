@@ -1,0 +1,22 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<main>
+    <section class="row" aria-labelledby="aspnetTitle">
+        <h1 id="title">Estudiantes</h1>
+        <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
+        <p><a href="https://asp.net" class="btn btn-primary btn-md">Learn more &raquo;</a></p>
+    </section>
+
+    <div class="row">
+
+        <h2 id="gettingStartedTitle">Estudiantes</h2>
+        <input class="form-control" name="IdUsuario" type="text" value="@TempData["TiposUsuario"]" />
+        <input class="form-control" name="IdUsuario" type="text" value="@TempData["IdUsuario"]" />
+        <h2 id="gettingStartedTitle">@TempData["IdUsuario"]</h2>
+        <h2 id="gettingStartedTitle">@TempData["TiposUsuario"]</h2>
+
+
+    </div>
+</main>
