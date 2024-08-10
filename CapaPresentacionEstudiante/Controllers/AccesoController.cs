@@ -41,14 +41,10 @@ namespace CapaPresentacionEstudiante.Controllers
             }
             else
             {
-                
                  if (!oUsuario.Reestablecer) /*valida si esta accediendo por primera vez y debe cambiar la contrasenia*/
                 {
                     TempData["IdUsuario"] = oUsuario.IdUsuario; /*almacena temporalmente el idUsuario  y lo envia a la vista*/
-                    TempData["TiposUsuario"] = oUsuario.TipoUsuario;
-
                     return RedirectToAction("CambiarClave");
-
 
                 }
                     FormsAuthentication.SetAuthCookie(oUsuario.Correo, false); //requiere autenticarse mediante el correo
