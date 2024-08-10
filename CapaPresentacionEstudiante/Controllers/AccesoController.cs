@@ -41,13 +41,8 @@ namespace CapaPresentacionEstudiante.Controllers
             }
             else
             {
-                if (!oUsuario.TipoUsuario.Equals(1) || !oUsuario.TipoUsuario.Equals(4)) /*valida si tiene autorizacion de ingreso*/
-                {
-                    ViewBag.Error = "No tiene autorizacion de ingresar al modulo estudiante"; /*almacena temporalmente el mensaje del error y lo envia a la vista*/
-                    return View();
-
-                }
-                else if (!oUsuario.Reestablecer) /*valida si esta accediendo por primera vez y debe cambiar la contrasenia*/
+                
+                 if (!oUsuario.Reestablecer) /*valida si esta accediendo por primera vez y debe cambiar la contrasenia*/
                 {
                     TempData["IdUsuario"] = oUsuario.IdUsuario; /*almacena temporalmente el idUsuario  y lo envia a la vista*/
                     TempData["TiposUsuario"] = oUsuario.TipoUsuario;
