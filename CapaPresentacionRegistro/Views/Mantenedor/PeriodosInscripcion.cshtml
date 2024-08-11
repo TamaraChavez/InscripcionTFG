@@ -4,5 +4,108 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>PeriodosInscripcion</h2>
 
+<div>
+    <h2>PeriodosInscripcion</h2>
+</div>
+
+<div class="form-periodoInscripcion">
+    <div>
+        <label for="cuatrimestre">Seleccione el Cuatrimestre</label>
+        <select id="opcionCuatrimestre" required>
+            <option value="1">I Cuatrimestre</option>
+            <option value="2">II Cuatrimestre</option>
+            <option value="3">III Cuatrimestre</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="fechaInicio">Seleccione Fecha Inicio del periodo</label>
+        <input type="date" name="name" id="fechaInicio" required />
+    </div>
+
+    <div>
+        <label for="horaInicio">Seleccione Hora Inicio del periodo</label>
+        <input type="time" name="name" id="horaInicio" step="900" required />
+    </div>
+
+    <div>
+        <label for="fechaFin">Seleccione Fecha Finalización del periodo</label>
+        <input type="date" name="name" id="fechaFin" required />
+    </div>
+
+    <div>
+        <label for="horaFin">Seleccione Hora Finalización del periodo</label>
+        <input type="time" name="name" id="horaFin" step="900" required/>
+    </div>
+
+    <div>
+        <button type="submit" class="btn btn-primary" onclick="habilitar()">
+            Habilitar periodo
+        </button>
+    </div>
+</div>
+
+
+<script>
+    //Limita las fechas de inicio y fin dependiendo del cuatrimestre seleccionado
+    document.getElementById("opcionCuatrimestre").addEventListener("change", function () {
+        var cuatrimestre = this.value;
+        var fechaInicio = document.getElementById("fechaInicio");
+        var fechaFin = document.getElementById("fechaFin");
+
+        if (cuatrimestre == "1") {
+            fechaInicio.min = "2024-01-01";
+            fechaInicio.max = "2024-04-30";
+            fechaFin.min = "2024-01-01";
+            fechaFin.max = "2024-04-30";
+        } else if (cuatrimestre == "2") {
+            fechaInicio.min = "2024-05-01";
+            fechaInicio.max = "2024-08-31";
+            fechaFin.min = "2024-05-01";
+            fechaFin.max = "2024-08-31";
+        } else if (cuatrimestre == "3") {
+            fechaInicio.min = "2024-09-01";
+            fechaInicio.max = "2024-12-31";
+            fechaFin.min = "2024-09-01";
+            fechaFin.max = "2024-12-31";
+        }
+
+        // Limpiar fechas seleccionadas si no están dentro del rango
+        if (fechaInicio.value < fechaInicio.min || fechaInicio.value > fechaInicio.max) {
+            fechaInicio.value = "";
+        }
+        if (fechaFin.value < fechaFin.min || fechaFin.value > fechaFin.max) {
+            fechaFin.value = "";
+        }
+    });
+
+    //Habilita el periodo de graduacion y lo agrega
+    function habilitar()
+    {
+        var fechaInicio = document.getElementById("fechaInicio").value;
+        var fechaFin = document.getElementById("fechaFin").value;
+        var horaInicio = document.getElementById("horaInicio").value;
+        var horaFin = document.getElementById("horaFin").value;
+
+        if (!horaInicio || !horaFin) {
+            alert("Por favor complete ambos campos de hora."); 
+            return;
+        }
+
+        if (!fechaInicio || !fechaFin) {
+            alert("Por favor complete ambos campos de fecha");
+            return;
+        }
+
+        var fechaI = new Date(fechaInicio);
+        var fechaF = new Date(fechaFin);
+
+        if (fechaI < fechaF) {
+            alert("Habilitaste el periodo correctamente");
+        } else {
+            alert("La fecha de finalización debe estar despues de la fecha de Inicio");   
+        }
+  
+    }
+</script>
