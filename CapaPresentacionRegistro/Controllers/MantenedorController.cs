@@ -25,6 +25,13 @@ namespace CapaPresentacionRegistro.Controllers
             return View();
         }
 
+        public ActionResult Modalidades() { 
+            return View();
+        }
+
        
+
+
+
     }
 }
