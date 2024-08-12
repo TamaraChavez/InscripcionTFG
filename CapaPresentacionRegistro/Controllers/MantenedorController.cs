@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CapaEntidad;
+using CapaNegocio;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -25,6 +27,16 @@ namespace CapaPresentacionRegistro.Controllers
             return View();
         }
 
-       
+
+        private CN_Periodos objNegocio = new CN_Periodos();
+
+        [HttpPost]
+        public JsonResult GuardarPeriodo(Periodo objeto)
+        {
+            string mensaje = objNegocio.Registrar(objeto);
+            return Json(new { mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+        }
+
+
     }
 }
