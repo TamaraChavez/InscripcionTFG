@@ -41,9 +41,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CN_Empresa.cs" />
+    <Compile Include="CN_Empresa_ID.cs" />
+    <Compile Include="CN_Inscripcion.cs" />
     <Compile Include="CN_Periodos.cs" />
     <Compile Include="CN_Recursos.cs" />
     <Compile Include="CN_Usuario.cs" />
+    <Compile Include="CN_Usuarios_Carrera.cs" />
+    <Compile Include="CN_Modalidad_Carrera.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

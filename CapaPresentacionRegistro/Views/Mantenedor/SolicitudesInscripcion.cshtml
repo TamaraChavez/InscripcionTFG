@@ -1,8 +1,233 @@
-﻿
+﻿@using CapaEntidad
+
 @{
     ViewBag.Title = "SolicitudesInscripcion";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@{
+    var carreras = ViewBag.Carreras as List<Carrera>;
+}
 
-<h2>SolicitudesInscripcion</h2>
 
+    <h2>Solicitudes de Inscripcion TFG</h2>
+    @if (ViewBag.IdUsuario != null)
+    {   
+        <form id="formInscripcion" method="post">
+            <div class="user-info">
+                <h4>Información Personal</h4>
+                <div class="list-unstyled">
+                    <ul>
+                        <li><strong>Identificación:</strong> @ViewBag.IdUsuario</li>
+                        <li><strong>Nombre:</strong> @ViewBag.Nombre</li>
+                        <li><strong>Apellidos:</strong> @ViewBag.Apellidos</li>
+                        <li><strong>Correo electrónico:</strong> @ViewBag.Correo</li>
+                    </ul>
+
+                    <div>
+                        <h4>Seleccione una de las carreras matriculadas</h4>
+                        @foreach (var carrera in carreras)
+                        {
+                            <div>
+                                <label>
+                                    <input type="radio" name="carreraSeleccionada" value="@carrera.IdCarrera"/>
+                                    @carrera.NomCarrera
+                                </label>
+                            </div>
+                        }
+                    </div>
+
+                    <div>
+                        <h4>Elija la modalidad que desea inscribir</h4>
+                        <select id="modalidadesSelect" required>
+                            <!--Las modalidades se cargaran mediante una solicitud AJAX-->
+                        </select>
+                    </div>
+
+                    <!-- Contenedor para la informacion de la empresa -->
+                    <div id="infoEmpresa"></div>
+
+                    <button class="btn btn-primary" type="submit" onclick="enviar()">Enviar</button>
+
+                </div>
+            </div>
+        </form>
+}
+else
+{
+    <p>No se pudo obtener el Id del usuario.</p>
+}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+
+
+    //Carga las modalidades dependiendo de que carrera se seleccione
+    document.querySelectorAll('input[name="carreraSeleccionada"]').forEach((element) => {
+        element.addEventListener('change', function () {
+            var idCarrera = this.value;
+
+            fetch('@Url.Action("ObtenerModalidades", "Mantenedor")?idCarrera=' + idCarrera)
+            .then(response => response.json())
+            .then(data => {
+            var select = document.getElementById("modalidadesSelect");
+            select.innerHTML = ""; // Limpiar el select
+
+            data.forEach(modalidad => {
+            var option = document.createElement("option");
+            option.value = modalidad.IdModalidad;
+            option.text = modalidad.NomModalidad;
+            select.appendChild(option);
+            });
+            })
+            .catch(error => console.error('Error:', error));
+            });
+            });
+
+
+    //Muestra la informacion relaciona con la empresa si se selecciona "Practica Supervisada"
+    $('#modalidadesSelect').on('change', function () {
+        var selectedOption = $(this).find('option:selected').text(); //Se obtiene el valor o id de la modalidad
+        console.log('Selected option:', selectedOption);
+
+        var checkboxContainer = $('#infoEmpresa');
+
+        // Limpia el contenedor del checkbox
+        checkboxContainer.empty();
+
+        if (selectedOption === "Practica Supervisada") {
+        // Si la modalidad seleccionada es "Práctica Supervisada"(idModalidad = 2) , añade el checkbox
+        var checkboxHtml = `
+        <div>
+            <label>
+                <input type="checkbox" name="empresaPractica" id="empresaPractica" value="1">
+                Tengo Empresa para realizar la práctica supervisada
+            </label>
+        </div>
+        `;
+
+        checkboxContainer.append(checkboxHtml);
+
+            // Si el checkbox se marca se cren  los campos para la informacion de la empresa empresa
+            $('#empresaPractica').off('change').on('change', function () {
+                if ($(this).is(':checked')) {
+                    var empresaInfoHtml = `
+                        <div id="empresaInfo">
+                            <div>
+                                <label for="nomEmpresa">Nombre de la Empresa:</label>
+                                <input type="text" id="nomEmpresa" name="nomEmpresa" required>
+                            </div>
+                            <div>
+                                <label for="telefono1">Teléfono 1:</label>
+                                <input type="text" id="telefono1" name="telefono1" required>
+                            </div>
+                            <div>
+                                <label for="telefono2">Teléfono 2:</label>
+                                <input type="text" id="telefono2" name="telefono2">
+                            </div>
+                            <div>
+                                <label for="nomContacto">Nombre del Contacto:</label>
+                                <input type="text" id="nomContacto" name="nomContacto" required>
+                            </div>
+                            <div>
+                                <label for="emailContacto">Correo Electrónico del Contacto:</label>
+                                <input type="text" id="emailContacto" name="emailContacto" required>
+                            </div>
+                        </div>
+                    `;
+                    checkboxContainer.append(empresaInfoHtml);
+                } else {
+                    $('#empresaInfo').remove(); // Remueve los campos si se desmarca el checkbox
+                }
+            });
+
+        }
+    });
+
+    //Si hay informacion sobre la empresa se guarda la empresa y se devuelve el id de la empresa 
+    //creada(ya que es autoincrement)Para poder agregarlo a  la inscripcion, sino solo se crea la inscripcion con
+    //idEmpresa = null
+    function enviar() {
+        var idUsuario = '@ViewBag.IdUsuario';
+        var idCarrera = $("input[name='carreraSeleccionada']:checked").val();
+        var idModalidad = $("#modalidadesSelect").val();
+        var idPeriodo = 8; // Valor fijo por ahora
+
+        // Verifica si el checkbox de empresa está marcado
+        if ($('#empresaPractica').is(':checked')) {
+            // Crear objeto de la empresa
+            var empresa = {
+                nomEmpresa: $("#nomEmpresa").val(),
+                telefono1: $("#telefono1").val(),
+                telefono2: $("#telefono2").val(),
+                nomContacto: $("#nomContacto").val(),
+                emailContacto: $("#emailContacto").val()
+            };
+
+            console.log(empresa);
+
+            // Enviar la empresa al servidor y obtener su ID
+            $.ajax({
+                url: '/Mantenedor/CrearEmpresa', // Ajusta la URL según tu controlador
+                type: 'POST',
+                data: empresa,
+                success: function (response) {
+                    var idEmpresa = response.idEmpresa; // El servidor devuelve el ID de la empresa
+
+                    // Ahora que tenemos el ID de la empresa, creamos la inscripción
+                    var inscripcion = {
+                        IdUsuario: idUsuario,
+                        IdCarrera: idCarrera,
+                        IdModalidad: idModalidad,
+                        IdEmpresa: idEmpresa,
+                        IdPeriodo: idPeriodo
+                    };
+
+                    // Enviar la inscripción al servidor
+                    $.ajax({
+                        url: '/Mantenedor/CrearInscripcion', 
+                        type: 'POST',
+                        data: inscripcion,
+                        success: function (response) {
+                            var mensaje = response.mensaje
+                            alert(mensaje);
+                        },
+                        error: function (response) {
+                            var mensaje = response.mensaje
+                            alert(mensaje);
+                        }
+                    });
+                },
+                error: function () {
+                    alert('Error al crear la Empresa o la Inscripcion.');
+                }
+            });
+        } else {
+            // No hay empresa, solo creamos la inscripción
+            var inscripcion = {
+                IdUsuario: idUsuario,
+                IdCarrera: idCarrera,
+                IdModalidad: idModalidad,
+                IdEmpresa: null,
+                IdPeriodo: idPeriodo
+            };
+
+            // Enviar la inscripción al servidor
+            $.ajax({
+                url: '/Mantenedor/CrearInscripcion', 
+                type: 'POST',
+                data: inscripcion,
+                success: function (response) {
+                    var mensaje = response.mensaje
+                    alert(mensaje);
+                },
+                error: function (response) {
+                    var mensaje = response.mensaje
+                    alert(mensaje);
+                }
+            });
+        }
+
+    }
+
+</script>
