@@ -43,7 +43,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CD_Empresa.cs" />
-    <Compile Include="CD_Empresa_ID.cs" />
     <Compile Include="CD_Inscripcion.cs" />
     <Compile Include="CD_Modalidad_Carreras.cs" />
     <Compile Include="CD_Periodos.cs" />

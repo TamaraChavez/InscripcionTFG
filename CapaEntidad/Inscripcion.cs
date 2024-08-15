@@ -11,7 +11,7 @@ namespace CapaEntidad
         public int IdUsuario { get; set; }
         public string IdCarrera { get; set; }
         public int IdModalidad { get; set; }
-        public int IdEmpresa { get; set; }
+        public int? IdEmpresa { get; set; }
         public int IdPeriodo { get; set; }
 
     }

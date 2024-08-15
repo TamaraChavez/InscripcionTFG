@@ -25,7 +25,7 @@ namespace CapaDatos
                     using (SqlCommand cmd = new SqlCommand(query, oconexion))
                     {
                         // Añadir parámetros para prevenir inyecciones SQL
-                        cmd.Parameters.AddWithValue("@Activo", obj.Activo); 
+                        cmd.Parameters.AddWithValue("@Activo", obj.Activo);
                         cmd.Parameters.AddWithValue("@Cuatrimestre", obj.Cuatrimestre);
                         cmd.Parameters.AddWithValue("@FechaInicio", obj.FechaInicio);
                         cmd.Parameters.AddWithValue("@HoraInicio", obj.HoraInicio);
@@ -53,6 +53,46 @@ namespace CapaDatos
             }
 
             return mensaje;
+        }
+
+
+        public Periodo ObtenerPeriodoActivo()
+        {
+            Periodo periodoActivo = null;  // Inicializa como null para comprobar si hay resultados
+
+            try
+            {
+                using (SqlConnection conexion = new SqlConnection(Conexion.cn))
+                {
+                    string query = @"SELECT * FROM Periodo WHERE Activo = @Activo";
+
+                    SqlCommand command = new SqlCommand(query, conexion);
+                    command.Parameters.AddWithValue("@Activo", 1);  // Parámetro para buscar el periodo activo
+
+                    conexion.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    if (reader.Read())  // Si hay resultados
+                    {
+                        periodoActivo = new Periodo
+                        {
+                            IdPeriodo = Convert.ToInt32(reader["idPeriodo"]),
+                            Cuatrimestre = reader["cuatrimestre"].ToString(),
+                            FechaInicio = Convert.ToDateTime(reader["fechaInicio"]),
+                            HoraInicio = ((DateTime)reader["HoraInicio"]).TimeOfDay,
+                            FechaFin = Convert.ToDateTime(reader["fechaFin"]),
+                            HoraFin = ((DateTime)reader["HoraFin"]).TimeOfDay,
+                            Activo = Convert.ToInt32(reader["Activo"])
+                        };
+                    }
+                }
+
+                return periodoActivo;  // Retorna el periodo activo o null si no hay periodo activo
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener el periodo activo", ex);  
+            }
         }
     }
 }

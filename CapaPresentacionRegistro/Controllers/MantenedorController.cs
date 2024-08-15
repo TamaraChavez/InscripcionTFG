@@ -99,7 +99,7 @@ namespace CapaPresentacionRegistro.Controllers
         public JsonResult CrearEmpresa(Empresa empresa)
         {
             int idEmpresa = objNegocioEmpresa.CrearEmpresa(empresa);
-            return Json(new { mensaje = idEmpresa }, JsonRequestBehavior.AllowGet);
+            return Json(new { idEmpresa = idEmpresa }, JsonRequestBehavior.AllowGet);
 
         }
 

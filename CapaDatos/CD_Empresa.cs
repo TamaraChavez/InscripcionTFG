@@ -28,7 +28,7 @@ namespace CapaDatos
                         // Añadir parámetros para prevenir inyecciones SQL
                         cmd.Parameters.AddWithValue("@nomEmpresa", obj.NomEmpresa);
                         cmd.Parameters.AddWithValue("@telefono1", obj.Telefono1);
-                        cmd.Parameters.AddWithValue("@telefono2", obj.Telefono2);
+                        cmd.Parameters.AddWithValue("@telefono2", string.IsNullOrEmpty(obj.Telefono2) ? (object)DBNull.Value : obj.Telefono2);      
                         cmd.Parameters.AddWithValue("@nomContacto", obj.NomContacto);
                         cmd.Parameters.AddWithValue("@EmailContacto", obj.CorreoContacto);
                         
