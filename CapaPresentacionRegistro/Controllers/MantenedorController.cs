@@ -28,6 +28,7 @@ namespace CapaPresentacionRegistro.Controllers
                 // Buscar el usuario en la base de datos usando el correo
                 Usuario oUsuario = new CN_Usuario().Listar().Where(u => u.Correo == correo).FirstOrDefault();
                 CN_Usuarios_Carrera cnUsuarioCarrera = new CN_Usuarios_Carrera();
+                CN_Periodos cN_Periodos = new CN_Periodos();
 
                 if (oUsuario != null)
                 {
@@ -36,6 +37,8 @@ namespace CapaPresentacionRegistro.Controllers
                     string apellidosUsuario = oUsuario.Apellido1 + " " + oUsuario.Apellido2;
                     string correoUsuario = oUsuario.Correo;
                     List<Carrera> carreras = cnUsuarioCarrera.ObtenerCarrerasPorUsuario(idUsuario);
+                    Periodo periodoActivo = cN_Periodos.ObtenerPeriodoActivo();
+                    bool periodoHabilitado = cN_Periodos.EsPeriodoHabilitado(periodoActivo); 
 
                     // Pasar el Id a la vista
                     ViewBag.IdUsuario = idUsuario;
@@ -43,6 +46,9 @@ namespace CapaPresentacionRegistro.Controllers
                     ViewBag.Apellidos = apellidosUsuario;
                     ViewBag.Correo = correoUsuario;
                     ViewBag.Carreras = carreras;
+                    ViewBag.Periodo = periodoActivo;
+                    ViewBag.PeriodoHabilitado = periodoHabilitado;
+                    ViewBag.FechaActual = DateTime.Now;
                 }
                 else
                 {
@@ -80,6 +86,9 @@ namespace CapaPresentacionRegistro.Controllers
         {
             return View();
         }
+
+
+
 
         //Objeto de la capa de negocios de Periodo
         private CN_Periodos objNegocioPeriodo = new CN_Periodos();

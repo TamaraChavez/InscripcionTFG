@@ -79,9 +79,9 @@ namespace CapaDatos
                             IdPeriodo = Convert.ToInt32(reader["idPeriodo"]),
                             Cuatrimestre = reader["cuatrimestre"].ToString(),
                             FechaInicio = Convert.ToDateTime(reader["fechaInicio"]),
-                            HoraInicio = ((DateTime)reader["HoraInicio"]).TimeOfDay,
+                            HoraInicio = (TimeSpan)reader["HoraInicio"],
                             FechaFin = Convert.ToDateTime(reader["fechaFin"]),
-                            HoraFin = ((DateTime)reader["HoraFin"]).TimeOfDay,
+                            HoraFin = (TimeSpan)reader["HoraFin"],
                             Activo = Convert.ToInt32(reader["Activo"])
                         };
                     }

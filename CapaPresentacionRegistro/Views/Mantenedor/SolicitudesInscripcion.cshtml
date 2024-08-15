@@ -6,58 +6,88 @@
 }
 @{
     var carreras = ViewBag.Carreras as List<Carrera>;
+    var periodoActivo = ViewBag.Periodo as CapaEntidad.Periodo;
+    var periodoHabilitado = ViewBag.PeriodoHabilitado;
+    var fechaActual = ViewBag.FechaActual;
 }
 
+<div id="contenidoInscripcion">
+    @if (ViewBag.PeriodoHabilitado)
+    {
+        <h2>Solicitudes de Inscripcion TFG</h2>
+        if (ViewBag.IdUsuario != null)
+        {
+            <form id="formInscripcion" method="post">
+                <div class="user-info">
+                    <h4>Información Personal</h4>
+                    <div class="list-unstyled">
+                        <ul>
+                            <li><strong>Identificación:</strong> @ViewBag.IdUsuario</li>
+                            <li><strong>Nombre:</strong> @ViewBag.Nombre</li>
+                            <li><strong>Apellidos:</strong> @ViewBag.Apellidos</li>
+                            <li><strong>Correo electrónico:</strong> @ViewBag.Correo</li>
+                        </ul>
 
-    <h2>Solicitudes de Inscripcion TFG</h2>
-    @if (ViewBag.IdUsuario != null)
-    {   
-        <form id="formInscripcion" method="post">
-            <div class="user-info">
-                <h4>Información Personal</h4>
-                <div class="list-unstyled">
-                    <ul>
-                        <li><strong>Identificación:</strong> @ViewBag.IdUsuario</li>
-                        <li><strong>Nombre:</strong> @ViewBag.Nombre</li>
-                        <li><strong>Apellidos:</strong> @ViewBag.Apellidos</li>
-                        <li><strong>Correo electrónico:</strong> @ViewBag.Correo</li>
-                    </ul>
+                        <div>
+                            <h4>Seleccione una de las carreras matriculadas</h4>
+                            @foreach (var carrera in carreras)
+                            {
+                                <div>
+                                    <label>
+                                        <input type="radio" name="carreraSeleccionada" value="@carrera.IdCarrera" />
+                                        @carrera.NomCarrera
+                                    </label>
+                                </div>
+                            }
+                        </div>
 
-                    <div>
-                        <h4>Seleccione una de las carreras matriculadas</h4>
-                        @foreach (var carrera in carreras)
-                        {
-                            <div>
-                                <label>
-                                    <input type="radio" name="carreraSeleccionada" value="@carrera.IdCarrera"/>
-                                    @carrera.NomCarrera
-                                </label>
-                            </div>
-                        }
+                        <div>
+                            <h4>Elija la modalidad que desea inscribir</h4>
+                            <select id="modalidadesSelect" required>
+                                <!--Las modalidades se cargaran mediante una solicitud AJAX-->
+                            </select>
+                        </div>
+
+                        <!-- Contenedor para la informacion de la empresa -->
+                        <div id="infoEmpresa"></div>
+
+                        <button class="btn btn-primary" type="button" onclick="enviar()">Enviar</button>
+
                     </div>
-
-                    <div>
-                        <h4>Elija la modalidad que desea inscribir</h4>
-                        <select id="modalidadesSelect" required>
-                            <!--Las modalidades se cargaran mediante una solicitud AJAX-->
-                        </select>
-                    </div>
-
-                    <!-- Contenedor para la informacion de la empresa -->
-                    <div id="infoEmpresa"></div>
-
-                    <button class="btn btn-primary" type="button" onclick="enviar()">Enviar</button>
-
                 </div>
-            </div>
-        </form>
-}
-else
-{
-    <p>No se pudo obtener el Id del usuario.</p>
-}
-
+            </form>
+        }
+        else
+        {
+            <p>No se pudo obtener el Id del usuario.</p>
+        }
+    }
+    else
+    {
+<div class="periodo-info" style="margin: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 10px;">
+    <h3 style="background-color: crimson; justify-content:center; font-family:'Times New Roman', Times, serif">EL PERIODO NO ESTÁ HABILITADO</h3>
+    <p><strong>Fecha actual del servidor:</strong> @fechaActual.ToString("dd/MM/yyyy")</p>
+    <p><strong>Fecha de inicio del periodo:</strong> @periodoActivo.FechaInicio.ToString("dd/MM/yyyy")</p>
+    <p><strong>Fecha de fin del periodo:</strong> @periodoActivo.FechaFin.ToString("dd/MM/yyyy")</p>
+    <p><strong>Hora actual del servidor:</strong><span id="horaActual">@fechaActual.ToString("hh:mm:ss tt")</span></p>
+    <p><strong>Hora de inicio del periodo:</strong> @periodoActivo.HoraInicio</p>
+    <p><strong>Hora de fin del periodo:</strong> @periodoActivo.HoraFin</p>
+</div>       
+    }
+</div>
+            
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    // Actualizar la hora en tiempo real
+    function actualizarReloj() {
+        var fechaHora = new Date();
+        var horaFormateada = fechaHora.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+        document.getElementById("horaActual").innerText = horaFormateada;
+    }
+
+    setInterval(actualizarReloj, 1000); // Actualiza cada segundo
+</script>
 
 <script>
 
