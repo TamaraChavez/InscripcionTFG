@@ -207,10 +207,6 @@
     <Content Include="Scripts\jquery-3.7.0.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CapaEntidad\CapaEntidad.csproj">
-      <Project>{630514d9-9288-43b6-8649-c15182b0b0bd}</Project>
-      <Name>CapaEntidad</Name>
-    </ProjectReference>
     <ProjectReference Include="..\CapaNegocio\CapaNegocio.csproj">
       <Project>{fb0e2362-8555-4e94-869c-21fc7d1e86ee}</Project>
       <Name>CapaNegocio</Name>
