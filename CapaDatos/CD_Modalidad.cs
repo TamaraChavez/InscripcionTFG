@@ -92,9 +92,10 @@ namespace CapaDatos
 
         }
 
-        public bool Editar(Modalidad obj, out string Mensaje)
+        public int Editar(Modalidad obj, out string Mensaje)
         {
             bool resultado = false;
+            int idautogenerado = 0;
             Mensaje = string.Empty;
             try
             {
