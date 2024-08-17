@@ -12,6 +12,7 @@
 
 # Carpeta de compilación (por ejemplo, para proyectos CMake)
 build/
+
 # User-specific files
 *.rsuser
 *.suo
@@ -26,20 +27,22 @@ build/
 mono_crash.*
 
 # Build results
-[Dd]ebug/
-[Dd]ebugPublic/
-[Rr]elease/
-[Rr]eleases/
-x64/
-x86/
-[Ww][Ii][Nn]32/
-[Aa][Rr][Mm]/
-[Aa][Rr][Mm]64/
-bld/
-[Bb]in/
-[Oo]bj/
-[Ll]og/
-[Ll]ogs/
+# Ignorar las carpetas "bin" y "obj" dentro de subdirectorios específicos, excepto donde sea necesario
+**/[Dd]ebug/
+**/[Dd]ebugPublic/
+**/[Rr]elease/
+**/[Rr]eleases/
+**/x64/
+**/x86/
+**/[Ww][Ii][Nn]32/
+**/[Aa][Rr][Mm]/
+**/[Aa][Rr][Mm]64/
+**/bld/
+# !CapaPresentacionDirectorCarrera/bin/
+# !CapaPresentacionDirectorCarrera/obj/
+
+# Nota: Si necesitas conservar `roslyn/csc.exe`, puedes agregar una excepción:
+!**/roslyn/csc.exe
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
@@ -391,17 +394,3 @@ FodyWeavers.xsd
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-*.code-workspace
-
-# Local History for Visual Studio Code
-.history/
-
-# Windows Installer files from build outputs
-*.cab
-*.msi
-*.msix
-*.msm
-*.msp
-
-# JetBrains Rider
-*.sln.iml
