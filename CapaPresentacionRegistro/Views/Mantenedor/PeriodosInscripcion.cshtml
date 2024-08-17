@@ -4,5 +4,197 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>PeriodosInscripcion</h2>
 
+<div>
+    <h2>Habilitar Periodo</h2>
+</div>
+
+<div class="form-periodoInscripcion">
+    <div>
+        <label for="cuatrimestre">Seleccione el Cuatrimestre</label>
+        <select id="opcionCuatrimestre" required>
+            <option value="1">I Cuatrimestre</option>
+            <option value="2">II Cuatrimestre</option>
+            <option value="3">III Cuatrimestre</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="fechaInicio">Seleccione Fecha Inicio del periodo</label>
+        <input type="date" name="name" id="fechaInicio" required />
+    </div>
+
+    <div>
+        <label for="horaInicio">Seleccione Hora Inicio del periodo</label>
+        <input type="time" name="name" id="horaInicio" step="900" required />
+    </div>
+
+    <div>
+        <label for="fechaFin">Seleccione Fecha Finalización del periodo</label>
+        <input type="date" name="name" id="fechaFin" required />
+    </div>
+
+    <div>
+        <label for="horaFin">Seleccione Hora Finalización del periodo</label>
+        <input type="time" name="name" id="horaFin" step="900" required />
+    </div>
+
+    <input type="hidden" name="Activo" value="1" />
+
+    <div>
+        <button type="submit" class="btn btn-primary" onclick="habilitar()">
+            Habilitar periodo
+        </button>
+    </div>
+</div>
+
+
+<!-- Modal de Confirmación -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">¿Está seguro que desea habilitar este periodo?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                <button type="button" class="btn btn-primary" id="confirmYesButton">Sí</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    //Limita las fechas de inicio y fin dependiendo del cuatrimestre seleccionado
+    document.addEventListener("DOMContentLoaded", function () {
+        // Seleccionar el elemento del cuatrimestre y los campos de fecha
+        var cuatrimestre = document.getElementById("opcionCuatrimestre");
+        var fechaInicio = document.getElementById("fechaInicio");
+        var fechaFin = document.getElementById("fechaFin");
+
+        // Función para actualizar los rangos de fecha basados en el cuatrimestre seleccionado
+        function actualizarFechas() {
+            var valorCuatrimestre = cuatrimestre.value;
+            var anoActual = new Date().getFullYear(); // Obtener el año actual directamente aquí
+
+            if (valorCuatrimestre == "1") {
+                fechaInicio.min = `${anoActual}-01-01`;
+                fechaInicio.max = `${anoActual}-04-30`;
+                fechaFin.min = `${anoActual}-01-01`;
+                fechaFin.max = `${anoActual}-04-30`;
+            } else if (valorCuatrimestre == "2") {
+                fechaInicio.min = `${anoActual}-05-01`;
+                fechaInicio.max = `${anoActual}-08-31`;
+                fechaFin.min = `${anoActual}-05-01`;
+                fechaFin.max = `${anoActual}-08-31`;
+            } else if (valorCuatrimestre == "3") {
+                fechaInicio.min = `${anoActual}-09-01`;
+                fechaInicio.max = `${anoActual}-12-31`;
+                fechaFin.min = `${anoActual}-09-01`;
+                fechaFin.max = `${anoActual}-12-31`;
+            }
+
+            // Limpiar fechas seleccionadas si no están dentro del rango
+            if (fechaInicio.value < fechaInicio.min || fechaInicio.value > fechaInicio.max) {
+                fechaInicio.value = "";
+            }
+            if (fechaFin.value < fechaFin.min || fechaFin.value > fechaFin.max) {
+                fechaFin.value = "";
+            }
+        }
+
+        // Configurar los valores iniciales basados en la selección predeterminada
+        actualizarFechas();
+
+        // Agregar el evento para actualizar las fechas cuando se cambia la selección
+        cuatrimestre.addEventListener("change", actualizarFechas);
+    });
+
+
+    //Habilita el periodo de graduacion y lo agrega
+    function habilitar()
+    {
+        // Crear el objeto Periodo con los valores del formulario
+        var periodo = {
+            Activo: 1, // Asignar valor 1 directamente
+            Cuatrimestre: $("#opcionCuatrimestre").val(),
+            FechaInicio: $("#fechaInicio").val(),
+            HoraInicio: $("#horaInicio").val(),
+            FechaFin: $("#fechaFin").val(),
+            HoraFin: $("#horaFin").val()
+        };
+
+        // Definir las variables de fecha y hora desde el formulario
+        var horaInicio = $("#horaInicio").val();
+        var horaFin = $("#horaFin").val();
+        var fechaInicio = $("#fechaInicio").val();
+        var fechaFin = $("#fechaFin").val();
+
+        if (!horaInicio || !horaFin) {
+            alert("Por favor complete ambos campos de hora.");
+            return;
+        }
+
+        if (!fechaInicio || !fechaFin) {
+            alert("Por favor complete ambos campos de fecha");
+            return;
+        }
+
+        var fechaI = new Date(fechaInicio);
+        var fechaF = new Date(fechaFin);
+
+        if (fechaI < fechaF) {
+            // Construir el mensaje de confirmación
+            var confirmMessage = `
+            <strong>Confirmar habilitación del periodo:</strong><br>
+            Cuatrimestre: ${$("#opcionCuatrimestre option:selected").text()}<br>
+            Fecha de Inicio: ${fechaInicio}<br>
+            Hora de Inicio: ${horaInicio}<br>
+            Fecha de Fin: ${fechaFin}<br>
+            Hora de Fin: ${horaFin}
+        `;
+
+            // Mostrar el mensaje en el modal de confirmación
+            $("#confirmMessage").html(confirmMessage);
+            $("#confirmModal").modal('show');
+
+            // Configurar el botón de confirmación
+            $("#confirmYesButton").off('click').on('click', function () {
+                // Ocultar el modal al confirmar
+                $("#confirmModal").modal('hide');
+
+                // Enviar los datos al servidor usando AJAX
+                jQuery.ajax({
+                    url: '@Url.Action("GuardarPeriodo", "Mantenedor")',
+                    type: "POST",
+                    data: JSON.stringify({ objeto: periodo }), // Enviar el objeto al servidor
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        // Mostrar el mensaje devuelto en un alert
+                        alert(data.mensaje);
+                    },
+                    error: function (error) {
+                        // Mostrar un mensaje de error en caso de fallo de la solicitud
+                        alert("Error al procesar la solicitud.");
+                    },
+                    beforeSend: function () {
+                        // Mostrar un overlay de carga antes de enviar la solicitud (opcional)
+                        $(".modal-body").LoadingOverlay("show", {
+                            imageResizeFactor: 2,
+                            text: "Cargando...",
+                            size: 14
+                        });
+                    }
+                });
+            });
+            } else {
+                alert("La fecha de finalización debe estar despues de la fecha de Inicio");
+            }
+        }
+
+</script>
