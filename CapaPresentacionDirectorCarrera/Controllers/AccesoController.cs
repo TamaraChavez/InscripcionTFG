@@ -36,7 +36,10 @@ namespace CapaPresentacionDirectorCarrera.Controllers
                     TempData["IdUsuario"] = oUsuario.IdUsuario; /*almacena temporalmente el idUsuario  y lo envia a la vista*/
                     return RedirectToAction("CambiarClave");
                 }
-
+                // Guardar datos del usuario en la sesión
+                Session["idUsuario"] = oUsuario.IdUsuario;
+                Session["nombreUsuario"] = oUsuario.Nombre;
+                Session["tipoUsuario"] = oUsuario.TipoUsuario;
                 FormsAuthentication.SetAuthCookie(oUsuario.Correo, false); //requiere autenticarse mediante el correo
 
                 ViewBag.Error = null;

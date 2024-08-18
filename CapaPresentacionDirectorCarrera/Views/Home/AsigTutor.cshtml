@@ -1,0 +1,187 @@
+﻿
+@{
+    ViewBag.Title = "AsigTutor";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<h2>AsigTutor</h2>
+
+<div>
+    <h4>Bienvenido, @Session["NombreUsuario"]</h4>
+</div>
+
+<ol class="breadcrumb mb-4 mt-4">
+    <li class="breadcrumb-item"><a href="index.html">Resumen</a></li>
+    <li class="breadcrumb-item active">Asignación de Tutor</li>
+</ol>
+
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-user-graduate me-1"></i> Lista de Inscripciones Resueltas
+    </div>
+    <div class="card-body">
+        <table id="tablaInscripciones" class="display cell-border" style="width: 100%">
+            <thead>
+                <tr>
+                    <th>ID Inscripción</th>
+                    <th>Director</th>
+                    <th>Tutor Actual</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal para Asignar Tutor -->
+<div class="modal fade" id="FormModal" tabindex="-1" aria-labelledby="FormModal" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="FormModal">Asignar Tutor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input id="txtIdInscripcionResuelta" type="hidden" value="0" />
+                <input id="txtIdUsuarioDirector" type="hidden" value="@Session["idUsuario"]" /> <!-- ID del Director -->
+                <div class="row g-2">
+                    <div class="col-sm-12">
+                        <label for="txtIdInscripcion" class="form-label">ID Inscripción</label>
+                        <input type="text" class="form-control" id="txtIdInscripcion" disabled>
+                    </div>
+                    <div class="col-sm-12">
+                        <label for="cboTutor" class="form-label">Tutor</label>
+                        <select id="cboTutor" class="form-select">
+                            <option selected>Selecciona un tutor</option>
+                        </select>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <div id="mensajeError" class="alert alert-danger" role="alert" style="display: none;">
+                                A simple danger alert—check it out!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" onclick="Guardar()">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        var tablaInscripciones;
+        var FilaSeleccionada;
+
+        // Inicializa la tabla con las inscripciones resueltas
+        tablaInscripciones = $("#tablaInscripciones").DataTable({
+            responsive: true,
+            ordering: false,
+            "ajax": {
+                url: '@Url.Action("ListarInscripciones", "AsignacionesTutor")',
+                type: "GET",
+                dataType: "json"
+            },
+            "columns": [
+                { "data": "idInscripcion" },
+                { "data": "idUsuarioDirector" }, 
+                { "data": "NombreTutor" }, 
+                {
+                    "data": "estado", "render": function (valor) {
+                        if (valor == 'Aprobado') {
+                            return '<span class="badge bg-success">Aprobado</span>';
+                        } else {
+                            return '<span class="badge bg-warning">Pendiente</span>';
+                        }
+                    }
+                },
+                {
+                    "data": null, "render": function (data, type, row) {
+                        if (row.estado == 'Aprobado') {
+                            return '<button type="button" class="btn btn-primary btn-sm btn-asignar">Asignar Tutor</button>';
+                        } else {
+                            return '<span class="text-muted">No disponible</span>';
+                        }
+                    },
+                    "orderable": false,
+                    "searchable": false,
+                    "width": "90px"
+                }
+            ],
+            "language": { "url": "https://cdn.datatables.net/plug-ins/2.0.8/i18n/es-MX.json" }
+        });
+
+        // Función para abrir el modal para asignar tutor
+        $("#tablaInscripciones tbody").on("click", '.btn-asignar', function () {
+            FilaSeleccionada = $(this).closest("tr");
+            var data = tablaInscripciones.row(FilaSeleccionada).data();
+
+            // Llenar los campos del modal con la información de la inscripción
+            $("#txtIdInscripcionResuelta").val(data.idInscipcionResuelta);
+            $("#txtIdInscripcion").val(data.idInscripcion);
+
+            // Cargar los tutores disponibles
+            cargarTutores();
+
+            $("#FormModal").modal("show");
+        });
+
+        // Función para cargar los tutores disponibles
+        function cargarTutores() {
+            jQuery.ajax({
+                url: '@Url.Action("ListarTutores", "AsignacionesTutor")',
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    var select = $("#cboTutor");
+                    select.empty();
+                    select.append($('<option>', { value: '', text: 'Selecciona un tutor' }));
+                    $.each(data, function (index, tutor) {
+                        select.append($('<option>', { value: tutor.idUsuario, text: tutor.Nombre }));
+                    });
+                },
+                error: function (error) {
+                    console.log("Error al cargar tutores:", error);
+                }
+            });
+        }
+
+        // Función para guardar la asignación del tutor
+        function Guardar() {
+            var Asignacion = {
+                idInscipcionResuelta: $("#txtIdInscripcionResuelta").val(),
+                idUsuarioTutor: $("#cboTutor").val(),
+                idUsuarioDirector: $("#txtIdUsuarioDirector").val() // ID del director desde la sesión
+            };
+
+            jQuery.ajax({
+                url: '@Url.Action("AsignarTutor", "AsignacionesTutor")',
+                type: "POST",
+                data: JSON.stringify(Asignacion),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    if (data.resultado) {
+                        tablaInscripciones.ajax.reload(null, false); // Recargar tabla sin reiniciar la paginación
+                        $("#FormModal").modal("hide");
+                    } else {
+                        $("#mensajeError").text(data.mensaje);
+                        $("#mensajeError").show();
+                    }
+                },
+                error: function (error) {
+                    $("#mensajeError").text("Error Ajax: " + error.responseText);
+                    $("#mensajeError").show();
+                }
+            });
+        }
+    </script>
+}
