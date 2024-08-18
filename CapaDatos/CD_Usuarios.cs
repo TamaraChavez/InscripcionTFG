@@ -74,6 +74,7 @@ namespace CapaDatos
                     cmd.Parameters.AddWithValue("Apellido2", obj.Apellido2);
                     cmd.Parameters.AddWithValue("Correo", obj.Correo);
                     cmd.Parameters.AddWithValue("clave", obj.clave);
+                    cmd.Parameters.AddWithValue("Carrera", obj.Carrera);
                     cmd.Parameters.AddWithValue("TipoUsuario", obj.TipoUsuario);
                     cmd.Parameters.AddWithValue("Activo", obj.Activo);
                     cmd.Parameters.Add("Resultado", SqlDbType.Int).Direction = ParameterDirection.Output;

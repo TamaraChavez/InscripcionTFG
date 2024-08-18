@@ -20,6 +20,8 @@ namespace CapaEntidad
 
         public String clave { get; set; }
 
+        public int Carrera { get; set; }
+
         public bool Reestablecer { get; set; }
 
         public bool Activo { get; set; }

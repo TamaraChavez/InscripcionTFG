@@ -30,12 +30,22 @@ namespace CapaPresentacionDocente.Controllers
             }
             else
             {
-
-                if (!oUsuario.Reestablecer) /*valida si esta accediendo por primera vez y debe cambiar la contrasenia*/
+                if (oUsuario.TipoUsuario.Contains('1') || oUsuario.TipoUsuario.Contains('0') || oUsuario.TipoUsuario.Contains('3')) /*Valida si tiene autorizacion de ingresar al modulo*/
+                {
+                    ViewBag.Error = "No tiene autorizacion para ingresar al modulo de docentes: "; /*almacena temporalmente el mensaje del error y lo envia a la vista*/
+                    return View();
+                }
+                else if (!oUsuario.Reestablecer) /*valida si esta accediendo por primera vez y debe cambiar la contrasenia*/
                 {
                     TempData["IdUsuario"] = oUsuario.IdUsuario; /*almacena temporalmente el idUsuario  y lo envia a la vista*/
                     return RedirectToAction("CambiarClave");
                 }
+
+                //if (!oUsuario.Reestablecer) /*valida si esta accediendo por primera vez y debe cambiar la contrasenia*/
+                //{
+                //    TempData["IdUsuario"] = oUsuario.IdUsuario; /*almacena temporalmente el idUsuario  y lo envia a la vista*/
+                //    return RedirectToAction("CambiarClave");
+                //}
 
                 FormsAuthentication.SetAuthCookie(oUsuario.Correo, false); //requiere autenticarse mediante el correo
 

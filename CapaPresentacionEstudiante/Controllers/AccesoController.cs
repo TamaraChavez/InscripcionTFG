@@ -27,6 +27,7 @@ namespace CapaPresentacionEstudiante.Controllers
         {
             return View();
         }
+    
 
         [HttpPost]
         public ActionResult Index(string correo, string clave)
@@ -41,15 +42,20 @@ namespace CapaPresentacionEstudiante.Controllers
             }
             else
             {
-                 if (!oUsuario.Reestablecer) /*valida si esta accediendo por primera vez y debe cambiar la contrasenia*/
+
+                if (oUsuario.TipoUsuario.Contains('0') ||oUsuario.TipoUsuario.Contains('2')|| oUsuario.TipoUsuario.Contains('3')) /*Valida si tiene autorizacion de ingresar al modulo*/
+                {
+                    ViewBag.Error = "No tiene autorizacion para ingresar al modulo de estudiantes: "; /*almacena temporalmente el mensaje del error y lo envia a la vista*/
+                    return View();
+                }
+                else if (!oUsuario.Reestablecer) /*valida si esta accediendo por primera vez y debe cambiar la contrasenia*/
                 {
                     TempData["IdUsuario"] = oUsuario.IdUsuario; /*almacena temporalmente el idUsuario  y lo envia a la vista*/
                     return RedirectToAction("CambiarClave");
-
                 }
                     FormsAuthentication.SetAuthCookie(oUsuario.Correo, false); //requiere autenticarse mediante el correo
 
-                    ViewBag.Error = null;
+                    ViewBag.Error = null; //si ya reestablecio la contrasenia y si tiene permiso de ingreso, se redirige al index
                     return RedirectToAction("Index", "Home");
                 
             }
