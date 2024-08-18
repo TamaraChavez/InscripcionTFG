@@ -42,8 +42,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CD_Modalidad.cs" />
+    <Compile Include="CD_Empresa.cs" />
+    <Compile Include="CD_Inscripcion.cs" />
+    <Compile Include="CD_Modalidad_Carreras.cs" />
+    <Compile Include="CD_Periodos.cs" />
     <Compile Include="CD_Usuarios.cs" />
+    <Compile Include="CD_Usuario_Carreras.cs" />
     <Compile Include="Conexion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

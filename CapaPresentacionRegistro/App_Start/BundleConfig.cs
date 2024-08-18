@@ -35,7 +35,8 @@ namespace CapaPresentacionRegistro
                         "~/Content/Site.css",
                          "~/Content/DataTables/css/jquery.dataTables.css", //obtenida de paquetes de nuget
                          "~/Content/DataTables/css/responsive.dataTables.css", //obtenida de paquetes de nuget
-                          "~/Content/sweetalert.css" //obtenida de paquetes de nuget
+                          "~/Content/sweetalert.css", //obtenida de paquetes de nuget
+                          "~/Content/EstilosPeriodoInscripcion.css"
                         ));
         }
     }
