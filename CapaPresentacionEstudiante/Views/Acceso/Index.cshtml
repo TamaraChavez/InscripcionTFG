@@ -23,11 +23,11 @@
                                 <div class="card-body">
                                     <form action="@Url.Action("Index", "Acceso")" method="post">
                                         <div class="form-floating mb-3">
-                                            <input class="form-control"  name="correo" type="email" />
+                                            <input class="form-control" name="correo" type="email" />
                                             <label for="correo">Correo</label>
                                         </div>
                                         <div class="form-floating mb-3">
-                                            <input class="form-control"  name="clave" type="password" />
+                                            <input class="form-control" name="clave" type="password" />
                                             <label for="clave">Contraseña</label>
                                         </div>
                                         @{
@@ -45,6 +45,9 @@
                                             <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
                                         </div>
                                     </form>
+                                </div>
+                                <div class="card-footer text-center py-3">
+                                    <div class="small"><a href="@Url.Action("AutoRegistro","Acceso")">¿No  tiene cuenta? Resitrese!</a></div>
                                 </div>
                             </div>
                         </div>

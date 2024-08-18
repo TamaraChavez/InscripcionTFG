@@ -68,6 +68,21 @@
                         <input type="email" class="form-control" id="txtCorreo">
                     </div>
                     <div class="col-sm-6">
+                        <label for="cboCarrera" class="form-label">Carrera</label>
+                        <select id="cboCarrera" class="form-select">
+                            <option selected>Selecciona una opcion</option>
+                            <option value="1">Administracion de Empresas</option>
+                            <option value="2">Electronica</option>
+                            <option value="3">Investigacion Criminal</option>
+                            <option value="4">Mecanica Dental</option>
+                            <option value="5">Secretariado Ejecutivo</option>
+                            <option value="6">Tecnologias de Informacion</option>
+                            <option value="7">Turismo</option>
+                            <option value="8">Gestion de Calidad</option>
+                            <option value="8">Big Data</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-6">
                         <label for="cboTipoUsuario" class="form-label">Tipo Usuario</label>
                         <select id="cboTipoUsuario" class="form-select">
                             <option selected>Selecciona una opcion</option>
@@ -175,6 +190,7 @@
             $("#cboActivo").val(1);
             $("#cboTipoUsuario").val("");
             $("#mensajeError").hide();
+            $("#cboCarrera").val(1);
 
             //en caso que se vaya a editar, los valores del modal toman el valor de json
 
@@ -186,6 +202,7 @@
                 $("#txtCorreo").val(json.Correo);
                 $("#cboActivo").val(json.Activo == true ? 1 : 0);
                 $("#cboTipoUsuario").val(json.TipoUsuario);
+                 $("#cboCarrera").val(1);
             }
             $("#FormModal").modal("show");
         }
@@ -262,6 +279,7 @@
                 Correo: $("#txtCorreo").val(),
                 IdUsuario: $("#txtid").val(),
                 Nombre: $("#txtNombres").val(),
+                Carrera: $("#cboCarrera").val(),
                 TipoUsuario: $("#cboTipoUsuario").val(),
             }
 
