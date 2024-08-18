@@ -174,15 +174,15 @@
         }
     });
 
-    //Si hay informacion sobre la empresa se guarda la empresa y se devuelve el id de la empresa 
-    //creada(ya que es autoincrement)Para poder agregarlo a  la inscripcion, sino solo se crea la inscripcion con
+    //Si hay informacion sobre la empresa se guarda la empresa y se devuelve el id de la empresa creada (ya que es autoincrement)
+    //Para poder agregarlo a  la inscripcion, sino solo se crea la inscripcion con
     //idEmpresa = null
     function enviar() {
         var idUsuario = '@ViewBag.IdUsuario';
         var idCarrera = $("input[name='carreraSeleccionada']:checked").val();
         var idModalidad = $("#modalidadesSelect").val();
         var idPeriodo = 8; // Valor fijo por ahora
-        //var emailContactoValue = $("#emailContacto").val();
+        var pendiente = 1;
 
         // Validar que se haya seleccionado una carrera y una modalidad
         if (!idCarrera || !idModalidad) {
@@ -245,10 +245,10 @@
                         IdCarrera: idCarrera,
                         IdModalidad: idModalidad,
                         IdEmpresa: idEmpresa,
-                        IdPeriodo: idPeriodo
+                        IdPeriodo: idPeriodo,
+                        Pendiente: pendiente
                     };
-                    console.log("ID de la empresa ingresada", idEmpresa)
-                    console.log("Antes de hacer la inscripcion", inscripcion)
+
                     // Enviar la inscripción al servidor
                     $.ajax({
                         url: '/Mantenedor/CrearInscripcion', 
@@ -280,7 +280,8 @@
                 IdCarrera: idCarrera,
                 IdModalidad: idModalidad,
                 IdEmpresa: null,
-                IdPeriodo: idPeriodo
+                IdPeriodo: idPeriodo,
+                Pendiente: pendiente
             };
 
             // Enviar la inscripción al servidor
