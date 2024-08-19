@@ -49,28 +49,28 @@ namespace CapaNegocio
 
         //    Debug.WriteLine("Editar - Estado es 'Aprobado', procediendo a la actualización.");
 
-        //    if (string.IsNullOrEmpty(Mensaje))
-        //    {
-        //        Debug.WriteLine("Editar - Mensaje de error está vacío, llamando a la capa de datos para editar.");
-        //        bool resultado = objCapaDato.Editar(obj, out Mensaje); // Cambiar a 'bool' ya que el método devuelve 'bool'
-        //        Debug.WriteLine($"Editar - Resultado de la operación de edición: {resultado}");
-        //        if (resultado)
-        //        {
-        //            Debug.WriteLine("Editar - Actualización realizada exitosamente.");
-        //            return true;
-        //        }
-        //        else
-        //        {
-        //            Debug.WriteLine("Editar - No se realizó ninguna actualización.");
-        //            return false;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        Debug.WriteLine($"Editar - Mensaje de error no está vacío: {Mensaje}");
-        //        return false;
-        //    }
-        //}
+            if (string.IsNullOrEmpty(Mensaje))
+            {
+                Debug.WriteLine("Editar - Mensaje de error está vacío, llamando a la capa de datos para editar.");
+                bool resultado = objCapaDato.Editar(obj, out Mensaje); // Cambiar a 'bool' ya que el método devuelve 'bool'
+                Debug.WriteLine($"Editar - Resultado de la operación de edición: {resultado}");
+                if (resultado)
+                {
+                    Debug.WriteLine("Editar - Actualización realizada exitosamente.");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine("Editar - No se realizó ninguna actualización.");
+                    return false;
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"Editar - Mensaje de error no está vacío: {Mensaje}");
+                return false;
+            }
+        }
 
 
   
