@@ -1,3 +1,4 @@
+
 ﻿using CapaEntidad;
 using CapaNegocio;
 using System;
@@ -6,9 +7,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-
 namespace CapaPresentacionDirectorCarrera.Controllers
 {
+
     public class HomeController : Controller
     {
         public ActionResult Index()
@@ -84,9 +85,5 @@ namespace CapaPresentacionDirectorCarrera.Controllers
                 return Json(new { resultado = false, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
             }
         }
-
-
-
-
     }
 }
