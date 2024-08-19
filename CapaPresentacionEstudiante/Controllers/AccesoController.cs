@@ -41,7 +41,7 @@ namespace CapaPresentacionEstudiante.Controllers
             }
             else
             {
-                if (!oUsuario.TipoUsuario.Equals(1) || !oUsuario.TipoUsuario.Equals(4)) /*valida si tiene autorizacion de ingreso*/
+                if (oUsuario.TipoUsuario.Contains("0") || oUsuario.TipoUsuario.Contains("2") || oUsuario.TipoUsuario.Contains("3")) /*valida si tiene autorizacion de ingreso*/
                 {
                     ViewBag.Error = "No tiene autorizacion de ingresar al modulo estudiante"; /*almacena temporalmente el mensaje del error y lo envia a la vista*/
                     return View();
