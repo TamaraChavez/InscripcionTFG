@@ -1,0 +1,158 @@
+﻿
+@{
+    ViewBag.Title = "AsigTutor";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" />
+
+}
+
+<h2>Asignar Tutor</h2>
+
+@*<div>
+        <h4>Bienvenido, @Session["NombreUsuario"]</h4>
+    </div>*@
+
+<ol class="breadcrumb mb-4 mt-4">
+    <li class="breadcrumb-item"><a href="index.html">Resumen</a></li>
+    <li class="breadcrumb-item active">Asignación de Tutor</li>
+</ol>
+
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-user-graduate me-1"></i> Lista de Inscripciones Resueltas
+    </div>
+    <div class="card-body">
+        <table id="tablaInscripciones" class="display cell-border" style="width: 100%">
+            <thead>
+                <tr>
+                    <th>ID Inscripción Resuelta</th>
+                    <th>ID Inscripción</th>
+                    <th>Director</th>
+                    <th>Estado</th>
+                    <th>Tutor Actual</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+    @section scripts {
+        <script>
+        var tablaInscripciones;
+
+        // Inicializa la tabla con las inscripciones resueltas
+        tablaInscripciones = $("#tablaInscripciones").DataTable({
+            responsive: true,
+            ordering: false,
+            "ajax": {
+                url: '@Url.Action("ListarInscripciones", "Home")',
+                type: "GET",
+                dataType: "json"
+            },
+            "columns": [
+                { "data": "idInscripcionResuelta" }, // Mostrar el ID de la inscripción resuelta
+                { "data": "idInscripcion" }, // Mostrar el ID de la inscripción
+                { "data": "idUsuarioDirector" }, // ID del Director
+                {
+                    "data": "estado",
+                    "render": function (valor) {
+                        if (valor == 'Aprobado') {
+                            return '<span class="badge bg-success">Aprobado</span>';
+                        } else {
+                            return '<span class="badge bg-warning">Reprobado</span>';
+                        }
+                    }
+                },
+                {
+                    "data": "idUsuarioTutor",
+                    "render": function (data, type, row) {
+                        return '<select class="form-select tutor-select" data-id="' + row.idInscripcionResuelta + '">' +
+                            '<option value="">Selecciona un tutor</option>' +
+                            '</select>';
+                    }
+                },
+                {
+                    "data": null,
+                    "render": function (data, type, row) {
+                        return '<button type="button" class="btn btn-primary btn-sm btn-guardar" data-id="' + row.idInscripcionResuelta + '">Guardar</button>';
+                    },
+                    "orderable": false,
+                    "searchable": false,
+                    "width": "90px"
+                }
+            ],
+            "language": { "url": "https://cdn.datatables.net/plug-ins/2.0.8/i18n/es-MX.json" },
+            "drawCallback": function(settings) {
+                cargarTutores();
+            }
+        });
+
+        function cargarTutores() {
+            jQuery.ajax({
+                url: '@Url.Action("ListarTutores", "Home")',
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    console.log(data)
+                    
+                    $(".tutor-select").each(function() {
+                        var select = $(this);
+                       
+                        select.empty();
+                        select.append($('<option>', { value: '', text: 'Selecciona un tutor' }));
+                        $.each(data, function (index, tutor) {
+                            select.append($('<option>', { value: tutor.IdUsuario, text: tutor.Nombre }));
+                        });
+                    });
+                },
+                error: function (error) {
+                    console.log("Error al cargar tutores:", error);
+                }
+            });
+        }
+
+        // Función para manejar el clic en el botón de guardar
+        $("#tablaInscripciones tbody").on("click", '.btn-guardar', function () {
+            var idInscripcionResuelta = $(this).data("id");
+            var select = $('.tutor-select[data-id="' + idInscripcionResuelta + '"]');
+            var idTutorSeleccionado = select.val();
+
+            if (!idTutorSeleccionado) {
+                alert("Debe seleccionar un tutor.");
+                return;
+            }
+
+            var Asignacion = {
+                idInscripcionResuelta: idInscripcionResuelta,
+                idUsuarioTutor: idTutorSeleccionado
+            };
+
+            jQuery.ajax({
+                url: '@Url.Action("AsignarTutor", "Home")',
+                type: "POST",
+                data: JSON.stringify(Asignacion),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    if (data.resultado) {
+                        alert(data.mensaje); 
+                       
+                        tablaInscripciones.ajax.reload(null, false); // Recargar tabla sin reiniciar la paginación
+                    } else {
+                        alert("Error: " + data.mensaje);
+                      
+                    }
+                },
+                error: function (error) {
+                    alert("Error Ajax: " + error.responseText);
+                }
+            });
+        });
+        </script>
+    }

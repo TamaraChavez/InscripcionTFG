@@ -30,31 +30,6 @@ namespace CapaPresentacionDirectorCarrera.Controllers
             }
             else
             {
-                if (oUsuario.TipoUsuario.Contains('1') || oUsuario.TipoUsuario.Contains('2') || oUsuario.TipoUsuario.Contains('3')) // Valida si tiene autorización de ingresar al módulo
-                {
-                    ViewBag.Error = "No tiene autorización para ingresar al módulo de registro."; // Almacena temporalmente el mensaje del error y lo envía a la vista
-                    return View();
-                }
-                else if (!oUsuario.Reestablecer) // Valida si está accediendo por primera vez y debe cambiar la contraseña
-                {
-                    TempData["IdUsuario"] = oUsuario.IdUsuario; // Almacena temporalmente el idUsuario y lo envía a la vista
-                    return RedirectToAction("CambiarClave", new { idUsuario = oUsuario.IdUsuario });
-                }
-
-                FormsAuthentication.SetAuthCookie(oUsuario.Correo, false); // Requiere autenticarse mediante el correo
-
-                ViewBag.Error = null;
-                return RedirectToAction("Index", "Home", new { idUsuario = oUsuario.IdUsuario });
-            }
-        }
-
-
-        [HttpPost]
-        public ActionResult CambiarClave(string IdUsuario, string claveActual, string nuevaClave, string ConfirmarClave)
-        {
-            Usuario oUsuario = new Usuario();
-            oUsuario = new CN_Usuario().Listar().Where(u => u.IdUsuario == int.Parse(IdUsuario)).FirstOrDefault();
-
             if (oUsuario.clave != CN_Recursos.ConvertirSha256(claveActual)) /*valida si la clave actual es correcta*/
             {
                 TempData["IdUsuario"] = IdUsuario;
