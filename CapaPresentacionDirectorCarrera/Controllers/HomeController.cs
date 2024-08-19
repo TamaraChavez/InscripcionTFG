@@ -42,20 +42,34 @@ namespace CapaPresentacionDirectorCarrera.Controllers
         }
 
         [HttpPost]
-        public JsonResult AsignarTutor(int idInscipcionResuelta, int idUsuarioTutor)
+        public JsonResult AsignarTutor(int idInscripcionResuelta, int idUsuarioTutor)
         {
             string mensaje = string.Empty;
 
-            // Actualiza la inscripción resuelta con el tutor seleccionado
-            bool resultado = new CN_AsigTutores().Editar(new InscripcionesResueltas
+            try
             {
-                idInscripcionResuelta = idInscipcionResuelta,
-                idUsuarioTutor = idUsuarioTutor
-                // No se asigna idUsuarioDirector desde la sesión, se asume que ya está en la base de datos
-            }, out mensaje);
+                Debug.WriteLine($"AsignarTutor - Iniciando asignación. ID Inscripción Resuelta: {idInscripcionResuelta}, ID Usuario Tutor: {idUsuarioTutor}");
 
-            return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+                // Actualiza la inscripción resuelta con el tutor seleccionado
+                bool resultado = new CN_AsigTutores().Editar(new InscripcionesResueltas
+                {
+                    idInscripcionResuelta = idInscripcionResuelta,
+                    idUsuarioTutor = idUsuarioTutor
+                    // No se asigna idUsuarioDirector desde la sesión, se asume que ya está en la base de datos
+                }, out mensaje);
+
+                Debug.WriteLine($"AsignarTutor - Resultado de la operación: {resultado}, Mensaje: {mensaje}");
+
+                return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"AsignarTutor - Ha ocurrido una excepción: {ex.Message}");
+                mensaje = "Ocurrió un error durante la asignación del tutor.";
+                return Json(new { resultado = false, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+            }
         }
+
 
     }
 }
