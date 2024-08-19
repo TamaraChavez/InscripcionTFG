@@ -13,6 +13,7 @@ namespace CapaEntidad
         public int IdModalidad { get; set; }
         public int? IdEmpresa { get; set; }
         public int IdPeriodo { get; set; }
-
+        public int Pendiente { get; set; }
+        //public int IdInscripcion { get; set; }
     }
 }

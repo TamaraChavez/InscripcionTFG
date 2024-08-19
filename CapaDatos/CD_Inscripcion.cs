@@ -21,15 +21,15 @@ namespace CapaDatos
                     // Consulta SQL para insertar un nuevo registro en la tabla Inscripcion
                     string query = @"
                         INSERT INTO Inscripcion (idUsuarioEstudiante, idCarrera, idModalidad, 
-                        idEmpresa, idPeriodo)
-                        VALUES (@IdUsuario, @IdCarrera, @IdModalidad, @IdEmpresa, @IdPeriodo)";
+                        idEmpresa, idPeriodo, Pendiente)
+                        VALUES (@IdUsuario, @IdCarrera, @IdModalidad, @IdEmpresa, @IdPeriodo, @Pendiente)";
 
                     using (SqlCommand cmd = new SqlCommand(query, oconexion))
                     {
                         // Añadir parámetros para prevenir inyecciones SQL
                         cmd.Parameters.AddWithValue("@IdUsuario", obj.IdUsuario);
                         cmd.Parameters.AddWithValue("@IdCarrera", obj.IdCarrera);
-                        cmd.Parameters.AddWithValue("@IdModalidad", obj.IdModalidad);
+                        cmd.Parameters.AddWithValue("@IdModalidad", obj.IdModalidad);                        
 
                         // Validar si IdEmpresa es null y agregar el parámetro adecuado
                         if (obj.IdEmpresa.HasValue)
@@ -42,6 +42,7 @@ namespace CapaDatos
                         }
 
                         cmd.Parameters.AddWithValue("@IdPeriodo", obj.IdPeriodo);
+                        cmd.Parameters.AddWithValue("@Pendiente", obj.Pendiente);
 
                         oconexion.Open();
 
@@ -74,6 +75,7 @@ namespace CapaDatos
 
             return mensaje;
         }
+
 
     }
 }
