@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "AsigTutor";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" />
 
 }
 
@@ -38,9 +39,15 @@
     </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
 @section scripts {
-    <script>
-        var tablaInscripciones;
+
+}
+
+<script>
+     var tablaInscripciones;
 
         // Inicializa la tabla con las inscripciones resueltas
         tablaInscripciones = $("#tablaInscripciones").DataTable({
@@ -89,66 +96,66 @@
             }
         });
 
-        // Función para cargar los tutores disponibles en todos los select de la columna "Tutor Actual"
-        function cargarTutores() {
-            jQuery.ajax({
-                url: '@Url.Action("ListarTutores", "Home")',
-                type: "GET",
-                dataType: "json",
-                success: function (data) {
-                    $(".tutor-select").each(function() {
-                        var select = $(this);
-                        var selectedValue = select.attr("data-idtutor"); // Optional: You can set selected value if needed
-                        select.empty();
-                        select.append($('<option>', { value: '', text: 'Selecciona un tutor' }));
-                        $.each(data, function (index, tutor) {
-                            var option = $('<option>', { value: tutor.idUsuario, text: tutor.Nombre });
-                            if (tutor.idUsuario == selectedValue) {
-                                option.attr("selected", "selected");
-                            }
-                            select.append(option);
-                        });
-                    });
-                },
-                error: function (error) {
-                    console.log("Error al cargar tutores:", error);
-                }
-            });
-        }
+     // Función para cargar los tutores disponibles en todos los select de la columna "Tutor Actual"
+     function cargarTutores() {
+         jQuery.ajax({
+             url: '@Url.Action("ListarTutores", "AsignacionesTutor")',
+             type: "GET",
+             dataType: "json",
+             success: function (data) {
+                 console.log(data)
+                 $(".tutor-select").each(function() {
+                     var select = $(this);
+                     var selectedValue = select.attr("data-idtutor"); // Optional: You can set selected value if needed
+                     select.empty();
+                     select.append($('<option>', { value: '', text: 'Selecciona un tutor' }));
+                     $.each(data, function (index, tutor) {
+                         var option = $('<option>', { value: tutor.idUsuario, text: tutor.Nombre });
+                         if (tutor.idUsuario == selectedValue) {
+                             option.attr("selected", "selected");
+                         }
+                         select.append(option);
+                     });
+                 });
+             },
+             error: function (error) {
+                 console.log("Error al cargar tutores:", error);
+             }
+         });
+     }
 
-        // Función para manejar el clic en el botón de guardar
-        $("#tablaInscripciones tbody").on("click", '.btn-guardar', function () {
-            var idInscripcionResuelta = $(this).data("id");
-            var select = $('.tutor-select[data-id="' + idInscripcionResuelta + '"]');
-            var idTutorSeleccionado = select.val();
+     // Función para manejar el clic en el botón de guardar
+     $("#tablaInscripciones tbody").on("click", '.btn-guardar', function () {
+         var idInscripcionResuelta = $(this).data("id");
+         var select = $('.tutor-select[data-id="' + idInscripcionResuelta + '"]');
+         var idTutorSeleccionado = select.val();
 
-            if (!idTutorSeleccionado) {
-                alert("Debe seleccionar un tutor.");
-                return;
-            }
+         if (!idTutorSeleccionado) {
+             alert("Debe seleccionar un tutor.");
+             return;
+         }
 
-            var Asignacion = {
-                idInscipcionResuelta: idInscripcionResuelta,
-                idUsuarioTutor: idTutorSeleccionado
-            };
+         var Asignacion = {
+             idInscipcionResuelta: idInscripcionResuelta,
+             idUsuarioTutor: idTutorSeleccionado
+         };
 
-            jQuery.ajax({
-                url: '@Url.Action("AsignarTutor", "Home")',
-                type: "POST",
-                data: JSON.stringify(Asignacion),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (data) {
-                    if (data.resultado) {
-                        tablaInscripciones.ajax.reload(null, false); // Recargar tabla sin reiniciar la paginación
-                    } else {
-                        alert("Error: " + data.mensaje);
-                    }
-                },
-                error: function (error) {
-                    alert("Error Ajax: " + error.responseText);
-                }
-            });
-        });
-    </script>
-}
+         jQuery.ajax({
+             url: '@Url.Action("AsignarTutor", "AsignacionesTutor")',
+             type: "POST",
+             data: JSON.stringify(Asignacion),
+             dataType: "json",
+             contentType: "application/json; charset=utf-8",
+             success: function (data) {
+                 if (data.resultado) {
+                     tablaInscripciones.ajax.reload(null, false); // Recargar tabla sin reiniciar la paginación
+                 } else {
+                     alert("Error: " + data.mensaje);
+                 }
+             },
+             error: function (error) {
+                 alert("Error Ajax: " + error.responseText);
+             }
+         });
+     });
+</script>
