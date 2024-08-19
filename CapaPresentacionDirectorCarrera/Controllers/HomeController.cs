@@ -1,11 +1,3 @@
-
-﻿using CapaEntidad;
-using CapaNegocio;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 namespace CapaPresentacionDirectorCarrera.Controllers
 {
@@ -16,6 +8,16 @@ namespace CapaPresentacionDirectorCarrera.Controllers
         {
             return View();
         }
+using CapaNegocio;
+public class HomeController : Controller
+{
+    private CN_InscripcionesResueltas objNegocio = new CN_InscripcionesResueltas();
+
+    public ActionResult Index()
+    {
+
+        return View();
+    }
 
         public ActionResult AsigTutor()
         {
@@ -59,6 +61,12 @@ namespace CapaPresentacionDirectorCarrera.Controllers
                     mensaje = "No se encontró la inscripción especificada.";
                     return Json(new { resultado = false, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
                 }
+    [HttpGet]
+    public JsonResult ListarUsuariosCarrera(int idDirector)
+    {
+        var resultado = objNegocio.Listar(idDirector);
+        return Json(resultado, JsonRequestBehavior.AllowGet);
+    }
 
                 // Actualiza la inscripción resuelta con el tutor seleccionado si el estado es aprobado
                 if (inscripcion.estado.Trim() == "Aprobado")
@@ -68,6 +76,12 @@ namespace CapaPresentacionDirectorCarrera.Controllers
                         idInscripcionResuelta = idInscripcionResuelta,
                         idUsuarioTutor = idUsuarioTutor
                     }, out mensaje);
+    [HttpPost]
+    public JsonResult ActualizarEstado(int idUsuario, string estado)
+    {
+        bool resultado = objNegocio.ActualizarEstadoInscripcion(idUsuario, estado);
+        return Json(new { resultado = resultado });
+    }
 
                     Debug.WriteLine($"AsignarTutor - Resultado de la operación: {resultado}, Mensaje: {mensaje}");
                     return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
@@ -86,4 +100,5 @@ namespace CapaPresentacionDirectorCarrera.Controllers
             }
         }
     }
+}
 }
