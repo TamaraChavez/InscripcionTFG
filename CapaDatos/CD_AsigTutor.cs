@@ -96,40 +96,34 @@ namespace CapaDatos
 
         public int Editar(InscripcionesResueltas obj, out string Mensaje)
         {
-            bool resultado = false;
-            int idautogenerado = 0;
+            int filasAfectadas = 0;
             Mensaje = string.Empty;
             try
             {
-
                 using (SqlConnection oconexion = new SqlConnection(Conexion.cn))
                 {
                     string query = "UPDATE Inscripciones_Resueltas SET idUsuarioTutor=@idUsuarioTutor WHERE idInscripcionResuelta=@idInscripcionResuelta";
-                                 
 
                     using (SqlCommand cmd = new SqlCommand(query, oconexion))
                     {
                         cmd.Parameters.AddWithValue("@idInscripcionResuelta", obj.idInscripcionResuelta);
                         cmd.Parameters.AddWithValue("@idUsuarioTutor", obj.idUsuarioTutor);
                         oconexion.Open();
-                        idautogenerado = (int)cmd.ExecuteScalar();
+                        filasAfectadas = cmd.ExecuteNonQuery();
                         Mensaje = "Asignacion de tutor realizada exitosamente.";
                         Debug.WriteLine("Asignacion de tutor realizada exitosamente");
-
                     }
                 }
             }
             catch (Exception ex)
             {
-                idautogenerado = 0;
+                filasAfectadas = 0;
                 Debug.WriteLine("Ha ocurrido un error actualizando la asignacion de tutor: " + ex.Message);
                 Mensaje = ex.Message;
             }
-            return idautogenerado;
-
-
-
+            return filasAfectadas;
         }
+
 
 
 

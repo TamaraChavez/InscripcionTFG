@@ -50,17 +50,32 @@ namespace CapaPresentacionDirectorCarrera.Controllers
             {
                 Debug.WriteLine($"AsignarTutor - Iniciando asignación. ID Inscripción Resuelta: {idInscripcionResuelta}, ID Usuario Tutor: {idUsuarioTutor}");
 
-                // Actualiza la inscripción resuelta con el tutor seleccionado
-                bool resultado = new CN_AsigTutores().Editar(new InscripcionesResueltas
+                // Obtén la inscripción resuelta correspondiente para verificar su estado
+                var inscripcion = new CN_AsigTutores().Listar().FirstOrDefault(x => x.idInscripcionResuelta == idInscripcionResuelta);
+
+                if (inscripcion == null)
                 {
-                    idInscripcionResuelta = idInscripcionResuelta,
-                    idUsuarioTutor = idUsuarioTutor
-                    // No se asigna idUsuarioDirector desde la sesión, se asume que ya está en la base de datos
-                }, out mensaje);
+                    mensaje = "No se encontró la inscripción especificada.";
+                    return Json(new { resultado = false, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+                }
 
-                Debug.WriteLine($"AsignarTutor - Resultado de la operación: {resultado}, Mensaje: {mensaje}");
+                // Actualiza la inscripción resuelta con el tutor seleccionado si el estado es aprobado
+                if (inscripcion.estado.Trim() == "Aprobado")
+                {
+                    bool resultado = new CN_AsigTutores().Editar(new InscripcionesResueltas
+                    {
+                        idInscripcionResuelta = idInscripcionResuelta,
+                        idUsuarioTutor = idUsuarioTutor
+                    }, out mensaje);
 
-                return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+                    Debug.WriteLine($"AsignarTutor - Resultado de la operación: {resultado}, Mensaje: {mensaje}");
+                    return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    mensaje = "No se puede asignar un tutor porque el estado no es 'Aprobado'.";
+                    return Json(new { resultado = false, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+                }
             }
             catch (Exception ex)
             {
@@ -69,6 +84,8 @@ namespace CapaPresentacionDirectorCarrera.Controllers
                 return Json(new { resultado = false, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
             }
         }
+
+
 
 
     }

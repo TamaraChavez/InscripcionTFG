@@ -33,47 +33,50 @@ namespace CapaNegocio
             return tutores;
         }
 
-        //EDITAR
-        //public bool Editar(InscripcionesResueltas obj, out string Mensaje)
-        //{
-        //    Mensaje = string.Empty;
 
-        //    // Verificar si el estado es aprobado antes de asignar el tutor
-        //    Debug.WriteLine($"Editar - Comenzando la validación para idInscipcionResuelta: {obj.idInscripcionResuelta}");
-        //    if (obj.estado != "Aprobado")
-        //    {
-        //        Mensaje = "No se puede asignar un tutor porque el estado no es 'Aprobado'.";
-        //        Debug.WriteLine($"Editar - Estado no es 'Aprobado'. Estado actual: {obj.estado}");
-        //        return false;
-        //    }
+        public bool Editar(InscripcionesResueltas obj, out string Mensaje)
+        {
+            Mensaje = string.Empty;
 
-        //    Debug.WriteLine("Editar - Estado es 'Aprobado', procediendo a la actualización.");
+            // Obtener el estado actual de la inscripción desde la base de datos
+            var inscripcionActual = objCapaDato.Listar().FirstOrDefault(x => x.idInscripcionResuelta == obj.idInscripcionResuelta);
 
-            if (string.IsNullOrEmpty(Mensaje))
+            if (inscripcionActual == null)
             {
-                Debug.WriteLine("Editar - Mensaje de error está vacío, llamando a la capa de datos para editar.");
-                bool resultado = objCapaDato.Editar(obj, out Mensaje); // Cambiar a 'bool' ya que el método devuelve 'bool'
-                Debug.WriteLine($"Editar - Resultado de la operación de edición: {resultado}");
-                if (resultado)
-                {
-                    Debug.WriteLine("Editar - Actualización realizada exitosamente.");
-                    return true;
-                }
-                else
-                {
-                    Debug.WriteLine("Editar - No se realizó ninguna actualización.");
-                    return false;
-                }
+                Mensaje = "No se encontró la inscripción especificada.";
+                return false;
+            }
+
+            Debug.WriteLine($"Editar - Comenzando la validación para idInscipcionResuelta: {obj.idInscripcionResuelta}");
+            if (inscripcionActual.estado.Trim() != "Aprobado")
+            {
+                Mensaje = "No se puede asignar un tutor porque el estado no es 'Aprobado'.";
+                Debug.WriteLine($"Editar - Estado no es 'Aprobado'. Estado actual: {inscripcionActual.estado}");
+                return false;
+            }
+
+            Debug.WriteLine("Editar - Estado es 'Aprobado', procediendo a la actualización.");
+
+            // Proceder con la actualización
+            int resultado = objCapaDato.Editar(obj, out Mensaje);
+            Debug.WriteLine($"Editar - Resultado de la operación de edición: {resultado}");
+
+            if (resultado > 0)
+            {
+                Debug.WriteLine("Editar - Actualización realizada exitosamente.");
+                return true;
             }
             else
             {
-                Debug.WriteLine($"Editar - Mensaje de error no está vacío: {Mensaje}");
+                Debug.WriteLine("Editar - No se realizó ninguna actualización.");
                 return false;
             }
         }
 
 
-  
+
+
+
 
 
     }
