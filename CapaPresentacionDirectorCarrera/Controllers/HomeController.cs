@@ -41,21 +41,21 @@ namespace CapaPresentacionDirectorCarrera.Controllers
             return Json(tutores, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpPost]
-        public JsonResult AsignarTutor(int idInscipcionResuelta, int idUsuarioTutor)
-        {
-            string mensaje = string.Empty;
+        //[HttpPost]
+        //public JsonResult AsignarTutor(int idInscipcionResuelta, int idUsuarioTutor)
+        //{
+        //    string mensaje = string.Empty;
 
-            // Actualiza la inscripción resuelta con el tutor seleccionado
-            bool resultado = new CN_AsigTutores().Editar(new InscripcionesResueltas
-            {
-                idInscripcionResuelta = idInscipcionResuelta,
-                idUsuarioTutor = idUsuarioTutor
-                // No se asigna idUsuarioDirector desde la sesión, se asume que ya está en la base de datos
-            }, out mensaje);
+        //    // Actualiza la inscripción resuelta con el tutor seleccionado
+        //    bool resultado = new CN_AsigTutores().Editar(new InscripcionesResueltas
+        //    {
+        //        idInscripcionResuelta = idInscipcionResuelta,
+        //        idUsuarioTutor = idUsuarioTutor
+        //        // No se asigna idUsuarioDirector desde la sesión, se asume que ya está en la base de datos
+        //    }, out mensaje);
 
-            return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
-        }
+        //    return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+        //}
 
     }
 }
