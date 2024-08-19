@@ -32,7 +32,7 @@ namespace CapaDatos
                             {
                                 lista.Add(new InscripcionesResueltas()
                                 {
-                                    idInscripcionResuelta = Convert.ToInt32(dr["idInscipcionResuelta"]),
+                                    idInscripcionResuelta = Convert.ToInt32(dr["idInscripcionResuelta"]),
                                     idInscripcion = Convert.ToInt32(dr["idInscripcion"]),
                                     idUsuarioDirector = Convert.ToInt32(dr["idUsuarioDirector"]),
                                     estado = dr["estado"].ToString(),

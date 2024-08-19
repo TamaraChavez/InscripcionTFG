@@ -12,7 +12,8 @@ namespace CapaNegocio
 {
     public class CN_AsigTutores
     {
-        private CN_AsigTutores objCapaDato = new CN_AsigTutores();
+        // Deberías crear un objeto de CD_AsigTutor en lugar de CN_AsigTutores
+        private CD_AsigTutor objCapaDato = new CD_AsigTutor();
 
         public List<InscripcionesResueltas> Listar()
         {
@@ -52,9 +53,9 @@ namespace CapaNegocio
             if (string.IsNullOrEmpty(Mensaje))
             {
                 Debug.WriteLine("Editar - Mensaje de error está vacío, llamando a la capa de datos para editar.");
-                bool resultado = objCapaDato.Editar(obj, out Mensaje); // Cambiar a 'bool' ya que el método devuelve 'bool'
+                int resultado = objCapaDato.Editar(obj, out Mensaje); // Cambiar a 'bool' ya que el método devuelve 'bool'
                 Debug.WriteLine($"Editar - Resultado de la operación de edición: {resultado}");
-                if (resultado)
+                if (resultado > 0)
                 {
                     Debug.WriteLine("Editar - Actualización realizada exitosamente.");
                     return true;

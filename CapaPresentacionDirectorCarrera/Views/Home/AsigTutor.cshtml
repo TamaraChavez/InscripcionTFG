@@ -47,7 +47,7 @@
             responsive: true,
             ordering: false,
             "ajax": {
-                url: '@Url.Action("ListarInscripciones", "AsignacionesTutor")',
+                url: '@Url.Action("ListarInscripciones", "Home")',
                 type: "GET",
                 dataType: "json"
             },
@@ -92,7 +92,7 @@
         // Función para cargar los tutores disponibles en todos los select de la columna "Tutor Actual"
         function cargarTutores() {
             jQuery.ajax({
-                url: '@Url.Action("ListarTutores", "AsignacionesTutor")',
+                url: '@Url.Action("ListarTutores", "Home")',
                 type: "GET",
                 dataType: "json",
                 success: function (data) {
@@ -133,7 +133,7 @@
             };
 
             jQuery.ajax({
-                url: '@Url.Action("AsignarTutor", "AsignacionesTutor")',
+                url: '@Url.Action("AsignarTutor", "Home")',
                 type: "POST",
                 data: JSON.stringify(Asignacion),
                 dataType: "json",
