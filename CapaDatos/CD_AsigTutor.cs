@@ -13,49 +13,48 @@ namespace CapaDatos
     public class CD_AsigTutor
     {
 
-        public List<InscripcionesResueltas> Listar()
-        {
-            List<InscripcionesResueltas> lista = new List<InscripcionesResueltas>();
-            try
+   
+            public List<InscripcionesResueltas> Listar()
             {
-                using (SqlConnection conexion = new SqlConnection(Conexion.cn))
+                List<InscripcionesResueltas> lista = new List<InscripcionesResueltas>();
+                try
                 {
-                    string query = "select idInscipcionResuelta, idUsuario,idUsuarioDirector, estado, idUsuarioTutor from Inscripciones_Resueltas";
-                    SqlCommand cmd = new SqlCommand(query, conexion);
-                    cmd.CommandType = CommandType.Text;
-                    conexion.Open();
-
-                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    using (SqlConnection conexion = new SqlConnection(Conexion.cn))
                     {
-                        while (dr.Read())
+                        string query = "SELECT idInscripcionResuelta, idInscripcion, idUsuarioDirector, estado, idUsuarioTutor FROM Inscripciones_Resueltas";
+                        SqlCommand cmd = new SqlCommand(query, conexion);
+                        cmd.CommandType = CommandType.Text;
+                        conexion.Open();
+
+                        using (SqlDataReader dr = cmd.ExecuteReader())
                         {
-                            lista.Add
-                                (
-                                new InscripcionesResueltas()
+                            while (dr.Read())
+                            {
+                                lista.Add(new InscripcionesResueltas()
                                 {
-                                    idInscipcionResuelta = Convert.ToInt32(dr["idInscipcionResuelta"]),
-                                    idUsuario = Convert.ToInt32(dr["idUsuario"]),
+                                    idInscripcionResuelta = Convert.ToInt32(dr["idInscipcionResuelta"]),
+                                    idInscripcion = Convert.ToInt32(dr["idInscripcion"]),
+                                    idUsuarioDirector = Convert.ToInt32(dr["idUsuarioDirector"]),
                                     estado = dr["estado"].ToString(),
-                                     idUsuarioTutor = Convert.ToInt32(dr["idUsuarioTutor"]),
-                                }
-                                );
+                                    idUsuarioTutor = Convert.ToInt32(dr["idUsuarioTutor"]),
+                                });
+                            }
                         }
                     }
                 }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Ha ocurrido un error listando la info: " + ex.Message);
+                    lista = new List<InscripcionesResueltas>();
+                    Debug.WriteLine("Acaba de crearse una nueva lista");
+                }
+                Debug.WriteLine("Lista retornada.");
+                return lista;
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Ha ocurrido un error listando la info: " + ex.Message);
-                lista = new List<InscripcionesResueltas>();
-                Debug.WriteLine("Acaba de crearse una nueva lista");
-            }
-            Debug.WriteLine("Lista retornada.");
-            return lista;
-
-        }
 
 
-        public List<Usuario> ListarTutoresCarrera()
+
+            public List<Usuario> ListarTutoresCarrera()
         {
             List<Usuario> lista = new List<Usuario>();
 
@@ -65,9 +64,9 @@ namespace CapaDatos
                 {
                     string query = @"
                 SELECT u.IdUsuario, u.Nombre, u.Apellido1, u.Apellido2
-                FROM Tutores_Carrera tc
-                INNER JOIN Usuario u ON tc.idUsuarioTutor = u.IdUsuario
-                WHERE u.TipoUsuario = '2'";
+  FROM Tutores_Carrera tc
+  INNER JOIN Usuario u ON tc.idUsuarioTutor = u.IdUsuario
+  WHERE u.TipoUsuario = '2'";
 
                     SqlCommand cmd = new SqlCommand(query, conexion);
                     cmd.CommandType = CommandType.Text;
@@ -105,12 +104,12 @@ namespace CapaDatos
 
                 using (SqlConnection oconexion = new SqlConnection(Conexion.cn))
                 {
-                    string query = "UPDATE Inscripciones_Resueltas SET idUsuarioTutor=@idUsuarioTutor WHERE idInscipcionResuelta=@idInscipcionResuelta";
+                    string query = "UPDATE Inscripciones_Resueltas SET idUsuarioTutor=@idUsuarioTutor WHERE idInscripcionResuelta=@idInscripcionResuelta";
                                  
 
                     using (SqlCommand cmd = new SqlCommand(query, oconexion))
                     {
-                        cmd.Parameters.AddWithValue("@idInscipcionResuelta", obj.idInscipcionResuelta);
+                        cmd.Parameters.AddWithValue("@idInscripcionResuelta", obj.idInscripcionResuelta);
                         cmd.Parameters.AddWithValue("@idUsuarioTutor", obj.idUsuarioTutor);
                         oconexion.Open();
                         idautogenerado = (int)cmd.ExecuteScalar();

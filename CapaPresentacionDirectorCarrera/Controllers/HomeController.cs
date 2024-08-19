@@ -2,6 +2,7 @@
 using CapaNegocio;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -22,8 +23,13 @@ namespace CapaPresentacionDirectorCarrera.Controllers
         [HttpGet]
         public JsonResult ListarInscripciones()
         {
-            // Obtén las inscripciones resueltas
+            Debug.WriteLine("Comenzando a listar inscripciones");
             List<InscripcionesResueltas> oLista = new CN_AsigTutores().Listar();
+            Debug.WriteLine($"HomeController.ListarInscripciones() - Se encontraron {oLista.Count} inscripciones.");
+            foreach (var inscripcion in oLista)
+            {
+                Debug.WriteLine($"Inscripción ID: {inscripcion.idInscripcionResuelta}, ID Inscripcion: {inscripcion.idInscripcion}, ID Director: {inscripcion.idUsuarioDirector}, Estado: {inscripcion.estado}, ID Tutor: {inscripcion.idUsuarioTutor}");
+            }
             return Json(new { data = oLista }, JsonRequestBehavior.AllowGet);
         }
 
@@ -39,15 +45,17 @@ namespace CapaPresentacionDirectorCarrera.Controllers
         public JsonResult AsignarTutor(int idInscipcionResuelta, int idUsuarioTutor)
         {
             string mensaje = string.Empty;
+
             // Actualiza la inscripción resuelta con el tutor seleccionado
             bool resultado = new CN_AsigTutores().Editar(new InscripcionesResueltas
             {
-                idInscipcionResuelta = idInscipcionResuelta,
-                idUsuarioTutor = idUsuarioTutor,
-                idUsuarioDirector = Convert.ToInt32(Session["idUsuario"]) // Asignar el director desde la sesión
+                idInscripcionResuelta = idInscipcionResuelta,
+                idUsuarioTutor = idUsuarioTutor
+                // No se asigna idUsuarioDirector desde la sesión, se asume que ya está en la base de datos
             }, out mensaje);
 
             return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
         }
+
     }
 }

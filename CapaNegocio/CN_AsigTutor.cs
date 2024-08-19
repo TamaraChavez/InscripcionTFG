@@ -16,7 +16,6 @@ namespace CapaNegocio
 
         public List<InscripcionesResueltas> Listar()
         {
-
             return objCapaDato.Listar();
         }
         // Método para listar tutores por carrera
@@ -31,7 +30,6 @@ namespace CapaNegocio
             {
                 Debug.WriteLine($"ListarTutoresCarrera - Se encontraron {tutores.Count} tutores.");
             }
-
             return tutores;
         }
 
@@ -41,7 +39,7 @@ namespace CapaNegocio
             Mensaje = string.Empty;
 
             // Verificar si el estado es aprobado antes de asignar el tutor
-            Debug.WriteLine($"Editar - Comenzando la validación para idInscipcionResuelta: {obj.idInscipcionResuelta}");
+            Debug.WriteLine($"Editar - Comenzando la validación para idInscipcionResuelta: {obj.idInscripcionResuelta}");
             if (obj.estado != "Aprobado")
             {
                 Mensaje = "No se puede asignar un tutor porque el estado no es 'Aprobado'.";
