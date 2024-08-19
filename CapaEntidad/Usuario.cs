@@ -8,8 +8,10 @@ namespace CapaEntidad
 {
     public class Usuario
     {
-        public int IdUsuario { get; set; }
+        public string Estado;
 
+        public int IdUsuario { get; set; }
+        public int idUsuario { get; set; }
         public String TipoUsuario { get; set; }
 
         public String Nombre { get; set; }
@@ -25,5 +27,6 @@ namespace CapaEntidad
         public bool Reestablecer { get; set; }
 
         public bool Activo { get; set; }
+        public string NombreCompleto { get; set; }
     }
 }

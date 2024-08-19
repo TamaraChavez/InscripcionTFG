@@ -1,19 +1,103 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    var idDirector = ViewBag.IdUsuario ?? 1; // Obtén el ID del director desde el ViewBag
 }
 
-<main>
-    <section class="row" aria-labelledby="aspnetTitle">
-        <h1 id="title">ASP.NET</h1>
-        <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-        <p><a href="https://asp.net" class="btn btn-primary btn-md">Learn more &raquo;</a></p>
-    </section>
+<ol class="breadcrumb mb-4 mt-4">
+    <li class="breadcrumb-item"><a href="index.html">Resumen</a></li>
+    <li class="breadcrumb-item active">Inscripciones Resueltas</li>
+</ol>
 
-    <div class="row">
-        <section class="col-md-4" aria-labelledby="gettingStartedTitle">
-            <section class="col-md-4" aria-labelledby="gettingStartedTitle">
-                <h2 id="gettingStartedTitle">Director de Carrera</h2>
-            </section>
-        </section>
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-users me-1"></i> Lista de Inscripciones Resueltas
     </div>
-</main>
+    <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-12">
+                <label for="txtidDirector" class="form-label">ID Director</label>
+                <input type="number" class="form-control" id="txtidDirector" value="@idDirector">
+                <button type="button" class="btn btn-primary mt-2" id="btnCargarDatos">Cargar Datos</button>
+            </div>
+        </div>
+        <hr />
+        <table id="tablaInscripciones" class="table table-bordered" style="width: 100%">
+            <thead>
+                <tr>
+                    <th>ID Usuario</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+@section scripts {
+    <script>
+    $(document).ready(function () {
+        // Cargar datos al hacer clic en el botón
+        $("#btnCargarDatos").on("click", function () {
+            var idDirector = $("#txtidDirector").val();
+            if (idDirector) {
+                $.ajax({
+                    url: '@Url.Action("ListarUsuariosCarrera", "Home")',
+                    type: "GET",
+                    dataType: "json",
+                    data: { idDirector: idDirector },
+                    success: function (data) {
+                        console.log("Datos recibidos:", data);
+                        // Limpiar la tabla antes de agregar nuevos datos
+                        $("#tablaInscripciones tbody").empty();
+
+                        // Agregar filas a la tabla con los datos recibidos
+                        data.forEach(function (item) {
+                            var row = `<tr data-id="${item.idUsuario}">
+                                <td>${item.idUsuario}</td>
+                                <td>${item.NombreCompleto}</td>
+                                <td>${item.Estado}</td>
+                                <td>
+                                    <button type="button" class="btn btn-success btn-sm btn-aprobado">Aprobado</button>
+                                    <button type="button" class="btn btn-danger btn-sm ms-2 btn-reprobado">Reprobado</button>
+                                </td>
+                            </tr>`;
+                            $("#tablaInscripciones tbody").append(row);
+                        });
+                    },
+                    error: function (error) {
+                        console.log("Error:", error);
+                    }
+                });
+            } else {
+                alert("Por favor, ingrese el ID del director.");
+            }
+        });
+
+        // Manejar el clic en los botones de Aprobado/Reprobado
+        $("#tablaInscripciones tbody").on("click", ".btn-aprobado, .btn-reprobado", function () {
+            var row = $(this).closest("tr");
+            var idUsuario = row.data("id");
+            var nuevoEstado = $(this).hasClass('btn-aprobado') ? "Aprobado" : "Reprobado";
+
+            $.ajax({
+                url: '@Url.Action("ActualizarEstado", "Home")',
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({ idUsuario: idUsuario, estado: nuevoEstado }),
+                success: function (response) {
+                    if (response.resultado) {
+                        // Actualizar el estado en la fila de la tabla
+                        row.find("td:nth-child(3)").text(nuevoEstado);
+                    } else {
+                        alert("No se pudo actualizar el estado.");
+                    }
+                },
+                error: function (error) {
+                    console.log("Error al actualizar:", error);
+                }
+            });
+        });
+    });
+    </script>
+}

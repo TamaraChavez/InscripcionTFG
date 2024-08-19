@@ -25,33 +25,29 @@ namespace CapaPresentacionDirectorCarrera.Controllers
 
             if (oUsuario == null)
             {
-                ViewBag.Error = "Correo o clave incorrecta"; /*almacena temporalmente el mensaje del error y lo envia a la vista*/
+                ViewBag.Error = "Correo o clave incorrecta"; // Almacena temporalmente el mensaje del error y lo envía a la vista
                 return View();
             }
             else
             {
-                if (oUsuario.TipoUsuario.Contains('1') || oUsuario.TipoUsuario.Contains('0') || oUsuario.TipoUsuario.Contains('2')) /*Valida si tiene autorizacion de ingresar al modulo*/
+                if (oUsuario.TipoUsuario.Contains('1') || oUsuario.TipoUsuario.Contains('2') || oUsuario.TipoUsuario.Contains('3')) // Valida si tiene autorización de ingresar al módulo
                 {
-                    ViewBag.Error = "No tiene autorizacion para ingresar al modulo de Director de Carrera: "; /*almacena temporalmente el mensaje del error y lo envia a la vista*/
+                    ViewBag.Error = "No tiene autorización para ingresar al módulo de registro."; // Almacena temporalmente el mensaje del error y lo envía a la vista
                     return View();
                 }
-                else if (!oUsuario.Reestablecer) /*valida si esta accediendo por primera vez y debe cambiar la contrasenia*/
+                else if (!oUsuario.Reestablecer) // Valida si está accediendo por primera vez y debe cambiar la contraseña
                 {
-                    TempData["IdUsuario"] = oUsuario.IdUsuario; /*almacena temporalmente el idUsuario  y lo envia a la vista*/
-                    return RedirectToAction("CambiarClave");
+                    TempData["IdUsuario"] = oUsuario.IdUsuario; // Almacena temporalmente el idUsuario y lo envía a la vista
+                    return RedirectToAction("CambiarClave", new { idUsuario = oUsuario.IdUsuario });
                 }
-                //if (!oUsuario.Reestablecer) /*valida si esta accediendo por primera vez y debe cambiar la contrasenia*/
-                //{
-                //    TempData["IdUsuario"] = oUsuario.IdUsuario; /*almacena temporalmente el idUsuario  y lo envia a la vista*/
-                //    return RedirectToAction("CambiarClave");
-                //}
 
-                FormsAuthentication.SetAuthCookie(oUsuario.Correo, false); //requiere autenticarse mediante el correo
+                FormsAuthentication.SetAuthCookie(oUsuario.Correo, false); // Requiere autenticarse mediante el correo
 
                 ViewBag.Error = null;
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Home", new { idUsuario = oUsuario.IdUsuario });
             }
-        }//termina el index de tipo post 
+        }
+
 
         [HttpPost]
         public ActionResult CambiarClave(string IdUsuario, string claveActual, string nuevaClave, string ConfirmarClave)

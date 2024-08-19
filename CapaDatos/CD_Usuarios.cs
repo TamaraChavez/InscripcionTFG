@@ -58,6 +58,81 @@ namespace CapaDatos
             return lista;
         }//Termina el listar 
 
+        public List<Usuario> ListarUsuariosCarrera(int idDirector)
+        {
+            List<Usuario> lista = new List<Usuario>();
+
+            try
+            {
+                using (SqlConnection oconexion = new SqlConnection(Conexion.cn))
+                {
+                    string query = @"
+                SELECT 
+                    u.idUsuario,
+                    u.Nombre + ' ' + u.Apellido1 + ' ' + u.Apellido2 AS NombreCompleto, 
+                    ir.estado 
+                FROM 
+                    Inscripciones_Resueltas ir
+                INNER JOIN 
+                    Usuario u ON ir.idUsuarioTutor = u.idUsuario
+                WHERE 
+                    ir.idUsuarioDirector = @idDirector";
+
+                    SqlCommand cmd = new SqlCommand(query, oconexion);
+                    cmd.Parameters.AddWithValue("@idDirector", idDirector);
+                    cmd.CommandType = CommandType.Text;
+
+                    oconexion.Open();
+
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            lista.Add(new Usuario()
+                            {
+                                idUsuario = Convert.ToInt32(dr["idUsuario"]),
+                                NombreCompleto = dr["NombreCompleto"].ToString(),
+                                Estado = dr["estado"].ToString()
+                            });
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                lista = new List<Usuario>();
+            }
+
+            return lista;
+        }
+
+
+        public bool ActualizarEstado(int idUsuario, string nuevoEstado)
+        {
+            bool resultado = false;
+
+            try
+            {
+                using (SqlConnection oconexion = new SqlConnection(Conexion.cn))
+                {
+                    string query = "UPDATE Inscripciones_Resueltas SET estado = @nuevoEstado WHERE idUsuarioTutor = @idUsuario";
+                    SqlCommand cmd = new SqlCommand(query, oconexion);
+                    cmd.Parameters.AddWithValue("@nuevoEstado", nuevoEstado);
+                    cmd.Parameters.AddWithValue("@idUsuario", idUsuario);
+                    cmd.CommandType = CommandType.Text;
+
+                    oconexion.Open();
+                    resultado = cmd.ExecuteNonQuery() > 0;
+                }
+            }
+            catch
+            {
+                resultado = false;
+            }
+
+            return resultado;
+        }
+
         //REGISTRAR
         public int Registrar(Usuario obj, out string Mensaje)
         {

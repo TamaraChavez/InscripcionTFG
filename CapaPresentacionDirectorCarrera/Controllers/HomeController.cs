@@ -1,30 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-
-namespace CapaPresentacionDirectorCarrera.Controllers
+﻿using System.Web.Mvc;
+using CapaNegocio;
+public class HomeController : Controller
 {
-    public class HomeController : Controller
+    private CN_InscripcionesResueltas objNegocio = new CN_InscripcionesResueltas();
+
+    public ActionResult Index()
     {
-        public ActionResult Index()
-        {
-            return View();
-        }
 
-        //public ActionResult About()
-        //{
-        //    ViewBag.Message = "Your application description page.";
-
-        //    return View();
-        //}
-
-        //public ActionResult Contact()
-        //{
-        //    ViewBag.Message = "Your contact page.";
-
-        //    return View();
-        //}
+        return View();
     }
+
+    [HttpGet]
+    public JsonResult ListarUsuariosCarrera(int idDirector)
+    {
+        var resultado = objNegocio.Listar(idDirector);
+        return Json(resultado, JsonRequestBehavior.AllowGet);
+    }
+
+    [HttpPost]
+    public JsonResult ActualizarEstado(int idUsuario, string estado)
+    {
+        bool resultado = objNegocio.ActualizarEstadoInscripcion(idUsuario, estado);
+        return Json(new { resultado = resultado });
+    }
+
 }
