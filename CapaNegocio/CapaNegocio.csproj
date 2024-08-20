@@ -46,20 +46,11 @@
     <Compile Include="CN_Inscripcion.cs" />
     <Compile Include="CN_Periodos.cs" />
     <Compile Include="CN_Recursos.cs" />
+    <Compile Include="CN_AsigTutores.cs" />
     <Compile Include="CN_Usuario.cs" />
     <Compile Include="CN_Usuarios_Carrera.cs" />
     <Compile Include="CN_Modalidad_Carrera.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\CapaDatos\CapaDatos.csproj">
-      <Project>{e42295b6-55f4-492c-934e-68ac83cc0bf8}</Project>
-      <Name>CapaDatos</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CapaEntidad\CapaEntidad.csproj">
-      <Project>{630514d9-9288-43b6-8649-c15182b0b0bd}</Project>
-      <Name>CapaEntidad</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

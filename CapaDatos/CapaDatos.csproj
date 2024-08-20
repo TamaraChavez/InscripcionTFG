@@ -46,16 +46,12 @@
     <Compile Include="CD_Inscripcion.cs" />
     <Compile Include="CD_Modalidad_Carreras.cs" />
     <Compile Include="CD_Periodos.cs" />
+    <Compile Include="CD_AsigTutor.cs" />
+    <Compile Include="CD_Modalidad.cs" />
     <Compile Include="CD_Usuarios.cs" />
     <Compile Include="CD_Usuario_Carreras.cs" />
     <Compile Include="Conexion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\CapaEntidad\CapaEntidad.csproj">
-      <Project>{630514d9-9288-43b6-8649-c15182b0b0bd}</Project>
-      <Name>CapaEntidad</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
