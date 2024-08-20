@@ -2,8 +2,11 @@
 
 @{
     ViewBag.Title = "SolicitudesInscripcion-Estudiante";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = null;
 }
+
+@Styles.Render("~/Content/css")
+
 @{
     var carreras = ViewBag.Carreras as List<Carrera>;
     var periodoActivo = ViewBag.Periodo as CapaEntidad.Periodo;
@@ -97,7 +100,7 @@
         element.addEventListener('change', function () {
             var idCarrera = this.value;
 
-            fetch('@Url.Action("ObtenerModalidades", "Mantenedor")?idCarrera=' + idCarrera)
+            fetch('@Url.Action("ObtenerModalidades", "Home")?idCarrera=' + idCarrera)
             .then(response => response.json())
             .then(data => {
             var select = document.getElementById("modalidadesSelect");
@@ -227,7 +230,7 @@
 
             // Enviar la empresa al servidor y obtener su ID
             $.ajax({
-                url: '/Mantenedor/CrearEmpresa', // Ajusta la URL según tu controlador
+                url: '/Home/CrearEmpresa', // Ajusta la URL según tu controlador
                 type: 'POST',
                 data: empresa,
                 success: function (response) {
@@ -251,7 +254,7 @@
 
                     // Enviar la inscripción al servidor
                     $.ajax({
-                        url: '/Mantenedor/CrearInscripcion',
+                        url: '/Home/CrearInscripcion',
                         type: 'POST',
                         data: inscripcion,
                         success: function (response) {
@@ -286,7 +289,7 @@
 
             // Enviar la inscripción al servidor
             $.ajax({
-                url: '/Mantenedor/CrearInscripcion',
+                url: '/Home/CrearInscripcion',
                 type: 'POST',
                 data: inscripcion,
                 success: function (response) {

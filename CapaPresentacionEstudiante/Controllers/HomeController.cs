@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 namespace CapaPresentacionEstudiante.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         //Carga la informacion del usuario que este logueado directamente al ir a la pagina
@@ -51,7 +52,7 @@ namespace CapaPresentacionEstudiante.Controllers
             }
             else
             {
-                // Redirigir al login si no está autenticado
+                //Redirigir al login si no está autenticado
                 return RedirectToAction("Index", "Acceso");
             }
             return View();
