@@ -32,8 +32,8 @@ namespace CapaDatos
                                 (
                                 new Modalidad()
                                 {
-                                    idModalidad = Convert.ToInt32(dr["idModalidad"]),
-                                    nomModalidad = dr["nomModalidad"].ToString()
+                                    IdModalidad = Convert.ToInt32(dr["idModalidad"]),
+                                    NomModalidad = dr["nomModalidad"].ToString()
                                 }
                                 );
                         }
@@ -70,8 +70,8 @@ namespace CapaDatos
 
                     using (SqlCommand cmd = new SqlCommand(query, oconexion))
                     {
-                        cmd.Parameters.AddWithValue("@idModalidad", obj.idModalidad);
-                        cmd.Parameters.AddWithValue("@nomModalidad", obj.nomModalidad);
+                        cmd.Parameters.AddWithValue("@idModalidad", obj.IdModalidad);
+                        cmd.Parameters.AddWithValue("@nomModalidad", obj.NomModalidad);
                         oconexion.Open();
                         idautogenerado = (int)cmd.ExecuteScalar();
                         Mensaje = "Modalidad registrada exitosamente.";
@@ -107,8 +107,8 @@ namespace CapaDatos
 
                     using (SqlCommand cmd = new SqlCommand(query, oconexion))
                     {
-                        cmd.Parameters.AddWithValue("@idModalidad", obj.idModalidad);
-                        cmd.Parameters.AddWithValue("@nomModalidad", obj.nomModalidad);
+                        cmd.Parameters.AddWithValue("@idModalidad", obj.IdModalidad);
+                        cmd.Parameters.AddWithValue("@nomModalidad", obj.NomModalidad);
                         oconexion.Open();
                         idautogenerado = (int)cmd.ExecuteScalar();
                         Mensaje = "Modalidad registrada exitosamente.";

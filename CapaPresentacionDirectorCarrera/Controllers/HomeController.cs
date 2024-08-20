@@ -1,28 +1,27 @@
 using System.Web.Mvc;
+using CapaNegocio;
+using System.Collections.Generic;
+using System.Diagnostics;
+using CapaEntidad;
+using System.Linq;
+using System;
+
 namespace CapaPresentacionDirectorCarrera.Controllers
 {
-
     public class HomeController : Controller
     {
+        private CN_InscripcionesResueltas objNegocio = new CN_InscripcionesResueltas();
+
         public ActionResult Index()
         {
             return View();
         }
-using CapaNegocio;
-public class HomeController : Controller
-{
-    private CN_InscripcionesResueltas objNegocio = new CN_InscripcionesResueltas();
-
-    public ActionResult Index()
-    {
-
-        return View();
-    }
 
         public ActionResult AsigTutor()
         {
             return View();
         }
+
         [HttpGet]
         public JsonResult ListarInscripciones()
         {
@@ -31,7 +30,7 @@ public class HomeController : Controller
             Debug.WriteLine($"HomeController.ListarInscripciones() - Se encontraron {oLista.Count} inscripciones.");
             foreach (var inscripcion in oLista)
             {
-                Debug.WriteLine($"Inscripción ID: {inscripcion.idInscripcionResuelta}, ID Inscripcion: {inscripcion.idInscripcion}, ID Director: {inscripcion.idUsuarioDirector}, Estado: {inscripcion.estado}, ID Tutor: {inscripcion.idUsuarioTutor}");
+                Debug.WriteLine($"Inscripción ID: {inscripcion.idInscripcionResuelta}, ID Inscripción: {inscripcion.idInscripcion}, ID Director: {inscripcion.idUsuarioDirector}, Estado: {inscripcion.estado}, ID Tutor: {inscripcion.idUsuarioTutor}");
             }
             return Json(new { data = oLista }, JsonRequestBehavior.AllowGet);
         }
@@ -61,12 +60,6 @@ public class HomeController : Controller
                     mensaje = "No se encontró la inscripción especificada.";
                     return Json(new { resultado = false, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
                 }
-    [HttpGet]
-    public JsonResult ListarUsuariosCarrera(int idDirector)
-    {
-        var resultado = objNegocio.Listar(idDirector);
-        return Json(resultado, JsonRequestBehavior.AllowGet);
-    }
 
                 // Actualiza la inscripción resuelta con el tutor seleccionado si el estado es aprobado
                 if (inscripcion.estado.Trim() == "Aprobado")
@@ -76,12 +69,6 @@ public class HomeController : Controller
                         idInscripcionResuelta = idInscripcionResuelta,
                         idUsuarioTutor = idUsuarioTutor
                     }, out mensaje);
-    [HttpPost]
-    public JsonResult ActualizarEstado(int idUsuario, string estado)
-    {
-        bool resultado = objNegocio.ActualizarEstadoInscripcion(idUsuario, estado);
-        return Json(new { resultado = resultado });
-    }
 
                     Debug.WriteLine($"AsignarTutor - Resultado de la operación: {resultado}, Mensaje: {mensaje}");
                     return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
@@ -99,6 +86,19 @@ public class HomeController : Controller
                 return Json(new { resultado = false, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
             }
         }
+
+        [HttpGet]
+        public JsonResult ListarUsuariosCarrera(int idDirector)
+        {
+            var resultado = objNegocio.Listar(idDirector);
+            return Json(resultado, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult ActualizarEstado(int idUsuario, string estado)
+        {
+            bool resultado = objNegocio.ActualizarEstadoInscripcion(idUsuario, estado);
+            return Json(new { resultado = resultado });
+        }
     }
-}
 }
