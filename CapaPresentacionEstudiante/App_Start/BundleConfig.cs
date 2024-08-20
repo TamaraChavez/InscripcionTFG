@@ -24,6 +24,7 @@ namespace CapaPresentacionEstudiante
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
+                      "~/Content/EstilosPeriodoInscripcion.css",
                       "~/Content/site.css"));
         }
     }
